@@ -51,7 +51,7 @@
     <h2>Editor</h2>
     <table class="InpTable">
         <tr>
-            <td class="Qp">Qn_text1:</td>
+            <td class="Qp">Qn_text1: 123</td>
             <td><input class="inp1" bind:value={Qn} type="text"></td>
         </tr>
         <tr>
