@@ -11,7 +11,8 @@
     </header>
     <slot></slot>
     <footer>
-        <sub>(maybe)</sub>Made with ❤️, by Nsta
+        <span class="tooltiptext">nice joke here:🤣</span>
+            Made with efforts
     </footer>
 </div>
 
@@ -40,7 +41,21 @@ footer{
     text-align: center;
 
 }
-footer > sub{
-        font-size: 10px;
-    }
+
+
+footer .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  border: 0.5px dotted #fff;
+  /* Position the tooltip */
+  z-index: 1;
+}
+
+footer:hover .tooltiptext {
+  visibility: visible;
+}
 </style>

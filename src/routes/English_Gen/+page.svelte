@@ -104,6 +104,7 @@ Bonds support not possible no idea
                 const nreg3 = new RegExp("\'","gm")
                 const nreg4 = new RegExp("([A-Z])(\\,)([a-z])","gm")
                 const nreg5 = new RegExp("([A-Z][a-z]|[A-Z])(\\,)([A-Z][a-z]|[A-Z])","gm")
+                const nreg6 = new RegExp("(\\,)([A-Z][a-z]|[A-Z])$","gm")
 
                 let x1 = x.replace(nreg1,'_').replace(nreg3,'')
                 let x2 = x.replace(nreg,"").split('').join(",")
@@ -115,7 +116,10 @@ Bonds support not possible no idea
                 })
                 let subst = `$1,1,$3,1`
                 let x5 = x4.replace(nreg5,subst)
-                chk7 += `\n<var name=chem_${x1} value=@userfChemistry.formatChemEquation({{${x5}}},1)>`
+                let x6       = x5.replace(nreg6,(x)=>{
+                    return x + ",1"
+                })
+                chk7 += `\n<var name=chem_${x1} value=@userfChemistry.formatChemEquation({{${x6}}},1)>`
                 }
         }
 
