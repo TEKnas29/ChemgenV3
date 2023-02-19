@@ -1,10 +1,8 @@
 <!-- TODO List -->
 <!-- 
-ISL part
 sp3 support
 +/- support not possible yet
 Bonds support not possible no idea 
-issue 'row no 34' fix
 -->
 <script>
     import CodeMirror from "svelte-codemirror-editor";
@@ -17,7 +15,8 @@ issue 'row no 34' fix
     let Ep=''
     $: f1 = setf1(`${Qn+Hn+Ep}`)
     $: t1 = sett1(`${Qn+Hn+Ep}`)
-    $: isl_final = checkIsl(f1,t1)
+    $: chemVar = setchemVAr(Qn+" "+Hn+" "+Ep)
+    $: isl_final = checkIsl(f1,t1,chemVar)
     $: isl_val = `<!-- #####################VAR################ -->\n${isl_final}`
     $: Qn1 = filterEng(Qn,1);
     $: Hn1 = filterEng(Hn,2);
@@ -25,13 +24,16 @@ issue 'row no 34' fix
     $: engFinal = Qn1+'\n'+ Hn1+'\n'+ Ep1
     $: eng_val = `<!-- ######################ENG##################### -->\n${engFinal}`
 
-    function checkIsl(f1,t1) {
+    function checkIsl(f1,t1,chemVar) {
         let final = ''
         if (f1 !=="<var name=f1 value={}>  // remove extra commas") {    
             final += f1 + "\n"
         }
         if (t1 !=="<var name=t1 value={}>  // remove extra commas") {
             final += t1 + "\n"
+        }
+        if(chemVar){
+            final += chemVar + "\n"
         }
         return final
     }
@@ -68,6 +70,61 @@ issue 'row no 34' fix
         }
         tp += "}>  // remove extra commas"
         return tp
+    }
+    function setchemVAr(para) {
+        const chemReg = new RegExp("[A-Z][a-z]?\\d*|\\((?:[^()]*(?:\\(.*\\))?[^()]*)+\\)\\d+", 'gm') // https://stackoverflow.com/questions/23602175/regex-for-parsing-chemical-formulas
+        const nonChem = new RegExp("(\'(..))?(\')([a-z])","gm") //crazy logic but it works
+        const BlackList = new  RegExp("\'(NMR|SN2|So|E2)\'","gm")  // Blacklist
+        const qCheck = new RegExp("\'\'","gm") //double quotes checker
+        const bCheck1 = new RegExp("\\(","gm") // "(" check
+        const bCheck2 = new RegExp("\\)","gm") // ")" check
+        const betweenQuotes = new RegExp("\'(.*?)\'",'gm') //values between quotes
+        let chk1 = para.replace(chemReg,(x)=>{
+            return `'${x}'`
+        })
+        let chk2 = chk1.replace(nonChem,(x)=>{
+            return x[1]+x[2]+x[4]
+        })
+        let chk3 = chk2.replace(qCheck,"")
+        let chk4 = chk3.replace(BlackList,function (s) {
+        let nreg = new RegExp("\'","g")
+        let  z = s.replace(nreg,'')
+        return `${z}`
+        })
+
+        let chk5 = chk4.replace(bCheck1,"\{")
+        let chk6 = chk5.replace(bCheck2,"\}")
+        let chk7_temp;
+        let chk7 = '';
+        if (chk7_temp = chk6.match(betweenQuotes)){
+            for(const x of chk7_temp){
+                const nreg = new RegExp('\'','gm')
+                const nreg1 = new RegExp("(\\{|\\})","g")
+                const nreg2 = new RegExp("([A-Z])(\\,)([A-Z])","gm")
+                const nreg3 = new RegExp("\'","gm")
+                const nreg4 = new RegExp("([A-Z])(\\,)([a-z])","gm")
+                const nreg5 = new RegExp("([A-Z][a-z]|[A-Z])(\\,)([A-Z][a-z]|[A-Z])","gm")
+
+                let x1 = x.replace(nreg1,'_').replace(nreg3,'')
+                let x2 = x.replace(nreg,"").split('').join(",")
+                let x3 = x2.replace(nreg2,(i)=>{
+                    return `${i[0]},1,${i[2]}`
+                })
+                let x4 = x3.replace(nreg4,(i)=>{
+                    return `${i[0]}${i[2]}`
+                })
+                let subst = `$1,1,$3,1`
+                let x5 = x4.replace(nreg5,subst)
+                chk7 += `\n<var name=chem_${x1} value=@userfChemistry.formatChemEquation({{${x5}}},1)>`
+                }
+        }
+
+        const finalOp = chk7.split("\n")
+                    .filter((item, i, allItems) => {
+                      return i === allItems.indexOf(item);
+                    })
+                    .join("\n");
+        return finalOp
     }
 
     function symbolCheck(para) {
@@ -137,12 +194,13 @@ issue 'row no 34' fix
     function CheckAllStage1(para) {
         const chemReg = new RegExp("[A-Z][a-z]?\\d*|\\((?:[^()]*(?:\\(.*\\))?[^()]*)+\\)\\d+", 'gm') // https://stackoverflow.com/questions/23602175/regex-for-parsing-chemical-formulas
         const nonChem = new RegExp("(\'(..))?(\')([a-z])","gm") //crazy logic but it works
-        const BlackList = new  RegExp("\'(NMR|SN2|So)\'","gm")  // Blacklist
+        const BlackList = new  RegExp("\'(NMR|SN2|So|E2)\'","gm")  // Blacklist
         const qCheck = new RegExp("\'\'","gm") //double quotes checker
         const bCheck1 = new RegExp("\\(","gm") // "(" check
         const bCheck2 = new RegExp("\\)","gm") // ")" check
         const betweenQuotes = new RegExp("\'(.*?)\'",'gm') //values between quotes
         const numChk = new RegExp("(\\b\\d\\.\\d+\\b)|(\\b\\d+\\b)","gm")
+        const spChk = new RegExp("(?:  )","gm")
         let chk1 = para.replace(chemReg,(x)=>{
             return `'${x}'`
         })
@@ -162,7 +220,7 @@ issue 'row no 34' fix
             let nreg = new RegExp("\'","g")
             let nreg1 = new RegExp("(\\{|\\})","g")
 
-            let  y = x.replace(nreg1,'') 
+            let  y = x.replace(nreg1,'_') 
             let  z = y.replace(nreg,'')
             return `@chem_${z};` 
         })
@@ -198,7 +256,7 @@ issue 'row no 34' fix
             }
         })
         
-        const finalOp = chk9
+        const finalOp = chk9.replace(spChk," ")
         return finalOp
     }
     
@@ -260,18 +318,21 @@ issue 'row no 34' fix
    <div class="box2">
     <div class="subbox1">
         <h2>ENG:</h2>
+        <h6>Note: sp3,SN2,bonds,charge is not supported yet they will remain as it is</h6>
         <CodeMirror 
         bind:value={eng_val} 
         theme={oneDark}
         styles={{
           "&": {
             lineWrapping: true,
-              color: "white",
-              width: "750px",
-              height: "350px",
-              maxWidth: "100%",
-              maxHeight: "30%",
-          },
+            color: "white",
+            width: "750px",
+            height: "350px",
+            maxWidth: "100%",
+            maxHeight: "30%",
+            styleActiveLine: true,
+            matchBrackets: true,        
+        },
       }}/>
       </div>
       <div class="subbox2">
@@ -281,13 +342,14 @@ issue 'row no 34' fix
         theme={oneDark}
         styles={{
           "&": {
-            lineWrapping: true,
-
+              lineWrapping: true,
               color: "white",
               width: "750px",
               height: "350px",
               maxWidth: "100%",
               maxHeight: "30%",
+              styleActiveLine: true,
+              matchBrackets: true,  
           },
       }}/>
       </div>
@@ -297,6 +359,9 @@ issue 'row no 34' fix
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap");
     h2{
       color: #006466;
+    }
+    h6{
+        color: #006466;
     }
     .template{
       display: flex;
