@@ -85,6 +85,5 @@
     min-height: 100%;
     height:1000px
   }
- 
 
 </style>
