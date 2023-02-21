@@ -1,5 +1,9 @@
 <script>
     import Navbar from "$lib/Navbar.svelte";
+
+    const egg = ['Money','Efforts','Love','Reassign','No reassign','Sveltekit','ISL']
+    const en = Math.floor((Math.random() * egg.length));
+    console.log(en);
 </script>
 
 <div class="main">
@@ -12,7 +16,7 @@
     <slot></slot>
     <footer>
         <span class="tooltiptext">nice joke here:🤣</span>
-            Made with efforts
+            Made with {egg[en]}
     </footer>
 </div>
 

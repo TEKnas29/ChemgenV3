@@ -1,7 +1,7 @@
 <!-- TODO List -->
 <!-- 
-sp3 support
-+/- support not possible yet
+sp3/SN2/spdf support
++/- support may be possible 
 Bonds support not possible no idea 
 -->
 <script>
@@ -9,7 +9,7 @@ Bonds support not possible no idea
     import { oneDark } from "@codemirror/theme-one-dark";  
   
     
-    
+    const BlackList = new  RegExp("\'(NMR|SN2|So|E2|In)\'","gm")  // Blacklist for words looklike chem formula
     let Qn=''
     let Hn=''
     let Ep=''
@@ -17,12 +17,12 @@ Bonds support not possible no idea
     $: t1 = sett1(`${Qn+Hn+Ep}`)
     $: chemVar = setchemVAr(Qn+" "+Hn+" "+Ep)
     $: isl_final = checkIsl(f1,t1,chemVar)
-    $: isl_val = `<!-- #####################VAR################ -->\n${isl_final}`
+    $: isl_val = `<!-- ***************VAR************* -->\n${isl_final}`
     $: Qn1 = filterEng(Qn,1);
     $: Hn1 = filterEng(Hn,2);
     $: Ep1 = filterEng(Ep,3);
     $: engFinal = Qn1+'\n'+ Hn1+'\n'+ Ep1
-    $: eng_val = `<!-- ######################ENG##################### -->\n${engFinal}`
+    $: eng_val = `${engFinal}`
 
     function checkIsl(f1,t1,chemVar) {
         let final = ''
@@ -72,9 +72,10 @@ Bonds support not possible no idea
         return tp
     }
     function setchemVAr(para) {
+        para = para.replace("\'","~") //quote safety
         const chemReg = new RegExp("[A-Z][a-z]?\\d*|\\((?:[^()]*(?:\\(.*\\))?[^()]*)+\\)\\d+", 'gm') // https://stackoverflow.com/questions/23602175/regex-for-parsing-chemical-formulas
         const nonChem = new RegExp("(\'(..))?(\')([a-z])","gm") //crazy logic but it works
-        const BlackList = new  RegExp("\'(NMR|SN2|So|E2)\'","gm")  // Blacklist
+        
         const qCheck = new RegExp("\'\'","gm") //double quotes checker
         const bCheck1 = new RegExp("\\(","gm") // "(" check
         const bCheck2 = new RegExp("\\)","gm") // ")" check
@@ -100,26 +101,31 @@ Bonds support not possible no idea
             for(const x of chk7_temp){
                 const nreg = new RegExp('\'','gm')
                 const nreg1 = new RegExp("(\\{|\\})","g")
-                const nreg2 = new RegExp("([A-Z])(\\,)([A-Z])","gm")
-                const nreg3 = new RegExp("\'","gm")
-                const nreg4 = new RegExp("([A-Z])(\\,)([a-z])","gm")
-                const nreg5 = new RegExp("([A-Z][a-z]|[A-Z])(\\,)([A-Z][a-z]|[A-Z])","gm")
-                const nreg6 = new RegExp("(\\,)([A-Z][a-z]|[A-Z])$","gm")
+                const nreg2 = new RegExp('[0-9]','gm')
+                const nreg3 = new RegExp('\,\,','gm')
+                const nreg4 = new RegExp("1\,\,","g")
+                const nreg5 = new RegExp("\{","g")
+                const nreg6 = new RegExp("^\{","g")
+                const nreg7 = new RegExp("\,$","g")
 
-                let x1 = x.replace(nreg1,'_').replace(nreg3,'')
-                let x2 = x.replace(nreg,"").split('').join(",")
-                let x3 = x2.replace(nreg2,(i)=>{
-                    return `${i[0]},1,${i[2]}`
-                })
-                let x4 = x3.replace(nreg4,(i)=>{
-                    return `${i[0]}${i[2]}`
-                })
-                let subst = `$1,1,$3,1`
-                let x5 = x4.replace(nreg5,subst)
-                let x6       = x5.replace(nreg6,(x)=>{
-                    return x + ",1"
-                })
-                chk7 += `\n<var name=chem_${x1} value=@userfChemistry.formatChemEquation({{${x6}}},1)>`
+                let x1 = x.replace(nreg1,'_').replace(nreg3,'').replace(nreg,'')
+                
+                let x2 = x.replace(nreg,"")
+                          .replace(nreg2,(p)=>{
+                                let q = p.replace(nreg,'')
+                                return `,${q},`
+                            })
+                            .replace(nreg,'')
+                            .replace(nreg3,'\,')
+                            .replace(chemReg,function (p) {        
+                                return `${p},1,`
+                            })
+                            .replace(nreg4,'')
+                            .replace(nreg5,'\{\,')
+                            .replace(nreg6,'1,\{')
+                            .replace(nreg7,'\}')
+                        console.log(x2);
+                chk7 += `\n<var name=chem_${x1} value=@userfChemistry.formatChemEquation({{${x2}}},1)>`
                 }
         }
 
@@ -198,12 +204,12 @@ Bonds support not possible no idea
     function CheckAllStage1(para) {
         const chemReg = new RegExp("[A-Z][a-z]?\\d*|\\((?:[^()]*(?:\\(.*\\))?[^()]*)+\\)\\d+", 'gm') // https://stackoverflow.com/questions/23602175/regex-for-parsing-chemical-formulas
         const nonChem = new RegExp("(\'(..))?(\')([a-z])","gm") //crazy logic but it works
-        const BlackList = new  RegExp("\'(NMR|SN2|So|E2)\'","gm")  // Blacklist
+        
         const qCheck = new RegExp("\'\'","gm") //double quotes checker
         const bCheck1 = new RegExp("\\(","gm") // "(" check
         const bCheck2 = new RegExp("\\)","gm") // ")" check
         const betweenQuotes = new RegExp("\'(.*?)\'",'gm') //values between quotes
-        const numChk = new RegExp("(\\b\\d\\.\\d+\\b)|(\\b\\d+\\b)","gm")
+        const numChk = new RegExp("(\\b\\d\\.\\d+\\b)|(\\b\\d+\\b)(°)?","gm")
         const spChk = new RegExp("(?:  )","gm")
         let chk1 = para.replace(chemReg,(x)=>{
             return `'${x}'`
@@ -234,6 +240,7 @@ Bonds support not possible no idea
         let thousandArr = []
         let chk9 = chk8.replace(numChk,(x)=>{
             const dotChk = new RegExp("\\.","gm")
+            const degChk = new RegExp('°',"gm")
             if (x.match(dotChk)) {
                 let y = `@userf.replace_comma_num(${x});`
                 if (floatArr.includes(y)) {
@@ -254,6 +261,9 @@ Bonds support not possible no idea
                 let count = thousandArr.length + 1
                 thousandArr.push(y)
                 return `@userf.disp('@t1[${count}];');`                
+            }else if(x.match(degChk)){
+                x = x.replace(degChk,"&deg;")
+                return `@userf.disp('${x}');`                
             }else{
                 return `@userf.disp('${x}');`                
 
@@ -276,17 +286,18 @@ Bonds support not possible no idea
         if (!md && !p) {
             return 0
         }else{
-            let para = EngCheck(p)
+            p = p.replace("\'","~") //quote safety
+            let para = EngCheck(p).replace("~","\'")
             let wrapper = ''
             switch (md) {
                 case 1:
-                    wrapper = `<text ref=Qn_text1>${para}</text>`
+                    wrapper = `<!-- *****************Q-text************* -->\n<text ref=Qn_text1>${para}</text>`
                     break;
                     case 2:
-                        wrapper = `<text ref=Hint_text1>${para}</text>`
+                        wrapper = `<!-- *****************Hint************* -->\n<text ref=Hint_text1>${para}</text>`
                         break;
                 case 3:
-                    wrapper = `<text ref=EP1_text1>${para}</text>`
+                    wrapper = `<!-- *****************Explainantion************* -->\n<text ref=EP1_text1>${para}</text>`
                     break;
                     
                     default:
