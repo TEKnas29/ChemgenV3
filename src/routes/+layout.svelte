@@ -57,6 +57,7 @@ footer .tooltiptext {
   border: 0.5px dotted #fff;
   /* Position the tooltip */
   z-index: 1;
+  margin-left: -80px;
 }
 
 footer:hover .tooltiptext {

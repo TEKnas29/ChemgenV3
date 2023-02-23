@@ -124,7 +124,6 @@ Bonds support not possible no idea
                             .replace(nreg5,'\{\,')
                             .replace(nreg6,'1,\{')
                             .replace(nreg7,'\}')
-                        console.log(x2);
                 chk7 += `\n<var name=chem_${x1} value=@userfChemistry.formatChemEquation({{${x2}}},1)>`
                 }
         }
@@ -293,11 +292,13 @@ Bonds support not possible no idea
                 case 1:
                     wrapper = `<!-- *****************Q-text************* -->\n<text ref=Qn_text1>${para}</text>`
                     break;
-                    case 2:
-                        wrapper = `<!-- *****************Hint************* -->\n<text ref=Hint_text1>${para}</text>`
-                        break;
+                case 2:
+                    wrapper = `<!-- *****************Hint************* -->\n<text ref=Hint_text1>${para}</text>`
+                    break;
                 case 3:
-                    wrapper = `<!-- *****************Explainantion************* -->\n<text ref=EP1_text1>${para}</text>`
+                    const pTag = new RegExp("\n\n","gm")
+                    let para1 = para.replace(pTag,"</p>\n<p>")
+                    wrapper = `<!-- *****************Explainantion************* -->\n<text ref=EP1_text1><p>${para1}</p></text>`
                     break;
                     
                     default:
@@ -418,6 +419,7 @@ Bonds support not possible no idea
     }
     .inp1{
         width: 600px;
+        font-family: monospace;
     }
   
   </style>
