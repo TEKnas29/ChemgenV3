@@ -1,7 +1,7 @@
 <script>
   import CodeMirror from "svelte-codemirror-editor";
   import { oneDark } from "@codemirror/theme-one-dark";
-  import { Label, Input, Textarea, Heading, Hr, P, Mark } from 'flowbite-svelte'
+  import {  Heading, Hr, P, Mark } from 'flowbite-svelte'
 
   let inp = "";
   $: isl_val = inp;
