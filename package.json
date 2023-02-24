@@ -21,6 +21,7 @@
   "type": "module",
   "dependencies": {
     "@codemirror/theme-one-dark": "^6.1.0",
+    "@lezer/common": "^1.0.2",
     "@popperjs/core": "^2.11.6",
     "@tinymce/tinymce-svelte": "^1.0.0",
     "classnames": "^2.3.2",
