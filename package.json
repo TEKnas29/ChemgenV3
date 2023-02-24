@@ -27,6 +27,7 @@
     "codemirror": "^6.0.1",
     "flowbite": "^1.6.3",
     "flowbite-svelte": "^0.30.4",
+    "lezer": "^0.13.5",
     "svelte-codemirror-editor": "^1.1.0"
   }
 }
