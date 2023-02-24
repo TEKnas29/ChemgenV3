@@ -25,7 +25,7 @@
     bind:value={inp_val}
   />
 
-</div>
+ </div>
  <div class="box2">
     <div class="subbox1">
       <h2>ISL:</h2>
@@ -58,32 +58,3 @@
     }}/></div>
  </div>
 </div>
-<style>
-  h2{
-    color: #006466;
-  }
-  .index{
-    display: flex;
-    justify-content: space-around;
-    text-align: center;
-    align-items: center;
-  }
-  .box1{
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    flex-direction: column;
-    min-width: 49%;
-    min-height: 100%;
-    height:1000px
-  }
-  .box2{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    min-width: 49%;
-    min-height: 100%;
-    height:1000px
-  }
-
-</style>

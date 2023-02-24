@@ -7,7 +7,7 @@ Bonds support not possible no idea
 <script>
     import CodeMirror from "svelte-codemirror-editor";
     import { oneDark } from "@codemirror/theme-one-dark";  
-  
+    import { Label, Input, Textarea, Heading, Hr, P, Mark } from 'flowbite-svelte'
     
     const BlackList = new  RegExp("\'(NMR|SN2|So|E2|In)\'","gm")  // Blacklist for words looklike chem formula
     let Qn=''
@@ -309,32 +309,26 @@ Bonds support not possible no idea
         
     }
 
-  </script>
+</script>
   
   
-  <div class="template">
-   <div class="box1">
-    <h2>Editor</h2>
-    <table class="InpTable">
-        <tr>
-            <td class="Qp">Qn_text1:</td>
-            <td><input class="inp1" bind:value={Qn} type="text"></td>
-        </tr>
-        <tr>
-            <td class="Qp">Hint_text:</td>
-            <td><input class="inp1" bind:value={Hn} type="text"></td>
-        </tr>
-        <tr>
-            <td class="Qp">EP_text1:</td>
-            <td><textarea cols="30" bind:value={Ep} rows="10" class="inp1"></textarea></td>
-        </tr>
-    </table>
+<div class="template flex">
+   <div class="basis-1/2 text-center p-10">
+    <Heading tag="h2" >Editor</Heading>
+    <div class="text-start w-full p-10 mb-6">
+        <Label for='Qn' class='block mb-2'>Qn_text1:</Label>
+        <Input id="Qn" size="lg" bind:value={Qn}></Input>
+        <Label for='Hn' class='block mb-2'>Hint_text:</Label>
+        <Input id="Hn" size="lg" bind:value={Hn}></Input>
+        <Label for='Ep' class='block mb-2'>Qn_text1:</Label>
+        <Textarea id='Ep' cols="30" bind:value={Ep} rows="10"></Textarea>
+    </div>
   
   </div>
-   <div class="box2">
+   <div class="basis-1/2 p-10">
     <div class="subbox1">
-        <h2>ENG:</h2>
-        <h6>Note: sp3,SN2,bonds,charge is not supported yet they will remain as it is</h6>
+        <Heading tag="h4">ENG:</Heading>
+        <P><Mark>Note:</Mark> sp3,SN2,bonds,charge is not supported yet they will remain as it is.</P>
         <CodeMirror 
         bind:value={eng_val} 
         theme={oneDark}
@@ -351,8 +345,9 @@ Bonds support not possible no idea
         },
       }}/>
       </div>
+      <Hr/>
       <div class="subbox2">
-        <h2>ISL:</h2>
+        <Heading tag="h4">ISL:</Heading>
         <CodeMirror 
         bind:value={isl_val} 
         theme={oneDark}
@@ -370,56 +365,4 @@ Bonds support not possible no idea
       }}/>
       </div>
    </div>
-  </div>
-  <style>
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap");
-    h2{
-      color: #006466;
-    }
-    h6{
-        color: #006466;
-    }
-    .template{
-      display: flex;
-      justify-content: space-around;
-      text-align: center;
-      align-items: center;
-    }
-    .box1{
-      display: flex;
-      justify-content: start;
-      align-items: center;
-      flex-direction: column;
-      min-width: 49%;
-      min-height: 100%;
-      height:1000px
-    }
-    .box2{
-    display: flex;
-    flex-direction: column;
-    text-align: start   ;
-    min-width: 49%;
-    min-height: 100%;
-    height:1000px
-  }
-    .InpTable{
-        border: 0;
-    }
-    tr{
-        width: 200px;
-    }
-     td{
-        width: 100px;
-    }
-    .Qp{
-        color: #F2F79E;
-        text-align: start;
-        font-size: 14;
-        font-family: inter;
-    }
-    .inp1{
-        width: 600px;
-        font-family: monospace;
-    }
-  
-  </style>
+</div>
