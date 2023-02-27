@@ -320,7 +320,7 @@ Bonds support not possible no idea
         <Input id="Qn" size="lg" bind:value={Qn}></Input>
         <Label for='Hn' class='block mb-2'>Hint_text:</Label>
         <Input id="Hn" size="lg" bind:value={Hn}></Input>
-        <Label for='Ep' class='block mb-2'>Qn_text1:</Label>
+        <Label for='Ep' class='block mb-2'>Ep_text1:</Label>
         <Textarea id='Ep' cols="30" bind:value={Ep} rows="10"></Textarea>
     </div>
   
