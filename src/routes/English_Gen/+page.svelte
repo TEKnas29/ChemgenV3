@@ -9,7 +9,7 @@ Bonds support not possible no idea
     import { oneDark } from "@codemirror/theme-one-dark";  
     import { Label, Input, Textarea, Heading, Hr, P, Mark } from 'flowbite-svelte'
     
-    const BlackList = new  RegExp("\'(NMR|SN2|So|E2|In)\'","gm")  // Blacklist for words looklike chem formula
+    const BlackList = new  RegExp("\'(NMR|SN2|So|E2|In|A)\'","gm")  // Blacklist for words looklike chem formula
     let Qn=''
     let Hn=''
     let Ep=''
@@ -293,12 +293,12 @@ Bonds support not possible no idea
                     wrapper = `<!-- *****************Q-text************* -->\n<text ref=Qn_text1>${para}</text>`
                     break;
                 case 2:
-                    wrapper = `<!-- *****************Hint************* -->\n<text ref=Hint_text1>${para}</text>`
+                    wrapper = `<!-- *****************Hint************* -->\n<text ref=Hint_text>${para}</text>`
                     break;
                 case 3:
                     const pTag = new RegExp("\n\n","gm")
                     let para1 = para.replace(pTag,"</p>\n<p>")
-                    wrapper = `<!-- *****************Explainantion************* -->\n<text ref=EP1_text1><p>${para1}</p></text>`
+                    wrapper = `<!-- *****************Explainantion************* -->\n<text ref=EP_text1><p>${para1}</p></text>`
                     break;
                     
                     default:
