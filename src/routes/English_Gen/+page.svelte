@@ -123,7 +123,7 @@ Bonds support not possible no idea
                             .replace(nreg4,'')
                             .replace(nreg5,'\{\,')
                             .replace(nreg6,'1,\{')
-                            .replace(nreg7,'\}')
+                            .replace(nreg7,'')
                 chk7 += `\n<var name=chem_${x1} value=@userfChemistry.formatChemEquation({{${x2}}},1)>`
                 }
         }

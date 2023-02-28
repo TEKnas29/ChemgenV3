@@ -12,7 +12,7 @@
     </NavBrand>
     <NavHamburger on:click={toggle} />
     <NavUl {hidden}>
-        <NavButton BtnName=Auto disabled/>
+        <NavButton BtnName=Auto />
         <NavButton BtnName="Template_Gen"/>
         <NavButton BtnName="English_Gen"/>
         <DarkMode/>
