@@ -299,7 +299,7 @@ struct check list
                     wrapper = `<!-- *****************Hint************* -->\n<text ref=Hint_text>${para}</text>`
                     break;
                 case 3:
-                    const pTag = new RegExp("\n\n","gm")
+                    const pTag = new RegExp("\n","gm")
                     let para1 = para.replace(pTag,"</p>\n<p>")
                     wrapper = `<!-- *****************Explainantion************* -->\n<text ref=EP_text1><p>${para1}</p></text>`
 
@@ -336,9 +336,9 @@ struct check list
         <CodeMirror 
         bind:value={eng_val} 
         theme={oneDark}
+        lineWrapping
         styles={{
           "&": {
-            lineWrapping: true,
             color: "white",
             width: "750px",
             height: "350px",
@@ -355,9 +355,9 @@ struct check list
         <CodeMirror 
         bind:value={isl_val} 
         theme={oneDark}
+        lineWrapping
         styles={{
           "&": {
-              lineWrapping: true,
               color: "white",
               width: "750px",
               height: "350px",
