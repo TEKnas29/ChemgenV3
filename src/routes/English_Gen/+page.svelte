@@ -3,6 +3,7 @@
 sp3/SN2/spdf support
 +/- support may be possible 
 Bonds support not possible no idea 
+struct check list
 -->
 <script>
     import CodeMirror from "svelte-codemirror-editor";
@@ -10,11 +11,13 @@ Bonds support not possible no idea
     import { Label, Input, Textarea, Heading, Hr, P, Mark } from 'flowbite-svelte'
     
     const BlackList = new  RegExp("\'(NMR|SN2|So|E2|In|A)\'","gm")  // Blacklist for words looklike chem formula
+    const chemReg = new RegExp("[A-Z][a-z]?\\d*|\\([^()]*(?:\\(.*\\))?[^()]*\\)\\d+", 'gm') // https://stackoverflow.com/questions/23602175/regex-for-parsing-chemical-formulas
+
     let Qn=''
     let Hn=''
     let Ep=''
-    $: f1 = setf1(`${Qn+Hn+Ep}`)
-    $: t1 = sett1(`${Qn+Hn+Ep}`)
+    $: f1 = setf1(Qn+' '+Hn+' '+Ep)
+    $: t1 = sett1(Qn+' '+Hn+' '+Ep)
     $: chemVar = setchemVAr(Qn+" "+Hn+" "+Ep)
     $: isl_final = checkIsl(f1,t1,chemVar)
     $: isl_val = `<!-- ***************VAR************* -->\n${isl_final}`
@@ -73,7 +76,6 @@ Bonds support not possible no idea
     }
     function setchemVAr(para) {
         para = para.replace("\'","~") //quote safety
-        const chemReg = new RegExp("[A-Z][a-z]?\\d*|\\((?:[^()]*(?:\\(.*\\))?[^()]*)+\\)\\d+", 'gm') // https://stackoverflow.com/questions/23602175/regex-for-parsing-chemical-formulas
         const nonChem = new RegExp("(\'(..))?(\')([a-z])","gm") //crazy logic but it works
         
         const qCheck = new RegExp("\'\'","gm") //double quotes checker
@@ -101,14 +103,16 @@ Bonds support not possible no idea
             for(const x of chk7_temp){
                 const nreg = new RegExp('\'','gm')
                 const nreg1 = new RegExp("(\\{|\\})","g")
-                const nreg2 = new RegExp('[0-9]','gm')
+                const nreg2 = new RegExp('\\d+','gm')
                 const nreg3 = new RegExp('\,\,','gm')
                 const nreg4 = new RegExp("1\,\,","g")
                 const nreg5 = new RegExp("\{","g")
                 const nreg6 = new RegExp("^\{","g")
                 const nreg7 = new RegExp("\,$","g")
 
-                let x1 = x.replace(nreg1,'_').replace(nreg3,'').replace(nreg,'')
+                let x1 = x
+                .replace(nreg1,'_')
+                .replace(nreg3,'').replace(nreg,'')
                 
                 let x2 = x.replace(nreg,"")
                           .replace(nreg2,(p)=>{
@@ -201,7 +205,6 @@ Bonds support not possible no idea
     }
 
     function CheckAllStage1(para) {
-        const chemReg = new RegExp("[A-Z][a-z]?\\d*|\\((?:[^()]*(?:\\(.*\\))?[^()]*)+\\)\\d+", 'gm') // https://stackoverflow.com/questions/23602175/regex-for-parsing-chemical-formulas
         const nonChem = new RegExp("(\'(..))?(\')([a-z])","gm") //crazy logic but it works
         
         const qCheck = new RegExp("\'\'","gm") //double quotes checker
@@ -299,6 +302,7 @@ Bonds support not possible no idea
                     const pTag = new RegExp("\n\n","gm")
                     let para1 = para.replace(pTag,"</p>\n<p>")
                     wrapper = `<!-- *****************Explainantion************* -->\n<text ref=EP_text1><p>${para1}</p></text>`
+
                     break;
                     
                     default:
@@ -317,9 +321,9 @@ Bonds support not possible no idea
     <Heading tag="h2" >Editor</Heading>
     <div class="text-start w-full p-10 mb-6">
         <Label for='Qn' class='block mb-2'>Qn_text1:</Label>
-        <Input id="Qn" size="lg" bind:value={Qn}></Input>
+        <Input id="Qn" size="lg" bind:value={Qn} autocomplete=off></Input>
         <Label for='Hn' class='block mb-2'>Hint_text:</Label>
-        <Input id="Hn" size="lg" bind:value={Hn}></Input>
+        <Input id="Hn" size="lg" bind:value={Hn} autocomplete=off></Input>
         <Label for='Ep' class='block mb-2'>Ep_text1:</Label>
         <Textarea id='Ep' cols="30" bind:value={Ep} rows="10"></Textarea>
     </div>
