@@ -1,6 +1,6 @@
 <!-- TODO List -->
 <!-- 
-sp3/SN2/spdf support
+SN2 support
 +/- support may be possible 
 Bonds support not possible no idea 
 struct check list
@@ -82,6 +82,9 @@ struct check list
         const bCheck1 = new RegExp("\\(","gm") // "(" check
         const bCheck2 = new RegExp("\\)","gm") // ")" check
         const betweenQuotes = new RegExp("\'(.*?)\'",'gm') //values between quotes
+        const sps = new RegExp("\\b(sp[2|3])\\b","gm")
+        const sn = new RegExp("\\b(SN2)\\b","gm")
+
         let chk1 = para.replace(chemReg,(x)=>{
             return `'${x}'`
         })
@@ -130,8 +133,21 @@ struct check list
                             .replace(nreg7,'')
                 chk7 += `\n<var name=chem_${x1} value=@userfChemistry.formatChemEquation({{${x2}}},1)>`
                 }
+                
         }
-
+        let chk8
+        if (chk8 = chk6.match(sps)) {
+            for(const x of chk8){
+                let x2 = x.split('').filter(v => /\d/.test(v))
+                chk7 += `\n<var name=${x} value=<math>sp<sup>${x2}</sup></math>`
+            }
+            
+        }
+        let chk9
+        if (chk9 = chk6.match(sn)) {
+                chk7 += `\n<var name=sn2 value=<math>S<sub>N</sub>2</math>`   
+        }
+    
         const finalOp = chk7.split("\n")
                     .filter((item, i, allItems) => {
                       return i === allItems.indexOf(item);
@@ -213,6 +229,8 @@ struct check list
         const betweenQuotes = new RegExp("\'(.*?)\'",'gm') //values between quotes
         const numChk = new RegExp("(\\b\\d\\.\\d+\\b)|(\\b\\d+\\b)(°)?","gm")
         const spChk = new RegExp("(?:\\s+)","gm")
+        const italiano = new RegExp("\\b(tert)\\b","gm")
+        const sps = new RegExp("\\b(sp[2|3])|(SN2)\\b","gm")
         let chk1 = para.replace(chemReg,(x)=>{
             return `'${x}'`
         })
@@ -228,6 +246,7 @@ struct check list
 
         let chk5 = chk4.replace(bCheck1,"\{")
         let chk6 = chk5.replace(bCheck2,"\}")
+                   
         let chk7 = chk6.replace(betweenQuotes,(x)=>{
             let nreg = new RegExp("\'","g")
             let nreg1 = new RegExp("(\\{|\\})","g")
@@ -236,6 +255,12 @@ struct check list
             let  z = y.replace(nreg,'')
             return `@chem_${z};` 
         })
+                        .replace(italiano,(i)=>{
+                                return `<i>${i}</i>`
+                            })
+                        .replace(sps,(i)=>{
+                                return `@${i.toLowerCase()};`
+                            })
         let chk8 = symbolCheck(chk7)
 
         let floatArr = []
@@ -332,7 +357,7 @@ struct check list
    <div class="basis-1/2 p-10">
     <div class="subbox1">
         <Heading tag="h4">ENG:</Heading>
-        <P><Mark>Note:</Mark> sp3,SN2,bonds,charge is not supported yet they will remain as it is.</P>
+        <P><Mark>Note:</Mark>bonds,charge is not supported yet they will remain as it is.</P>
         <CodeMirror 
         bind:value={eng_val} 
         theme={oneDark}
