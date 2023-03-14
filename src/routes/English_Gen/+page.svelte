@@ -145,7 +145,7 @@ struct check list
         }
         let chk9
         if (chk9 = chk6.match(sn)) {
-                chk7 += `\n<var name=sn2 value=<math>S<sub>N</sub>2</math>`   
+                chk7 += `\n<var name=sn2 value=<math><font face=text>S<sub>N</sub>2</font></math>`   
         }
     
         const finalOp = chk7.split("\n")
