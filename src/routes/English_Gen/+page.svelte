@@ -212,7 +212,7 @@ struct check list
         const bCheck2 = new RegExp("\\)","gm") // ")" check
         const betweenQuotes = new RegExp("\'(.*?)\'",'gm') //values between quotes
         const numChk = new RegExp("(\\b\\d\\.\\d+\\b)|(\\b\\d+\\b)(°)?","gm")
-        const spChk = new RegExp("(?:\\s\\s+)","gm")
+        const spChk = new RegExp("(?:\\s+)","gm")
         let chk1 = para.replace(chemReg,(x)=>{
             return `'${x}'`
         })
