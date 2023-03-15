@@ -261,6 +261,8 @@ struct check list
                         .replace(sps,(i)=>{
                                 return `@${i.toLowerCase()};`
                             })
+                        .replace("{","(")
+                        .replace("}",")")
         let chk8 = symbolCheck(chk7)
 
         let floatArr = []
