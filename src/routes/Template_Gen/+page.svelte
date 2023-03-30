@@ -7,6 +7,7 @@
 
 <script>
   import InpTable from "$lib/InpTable.svelte"
+  let tg = false
   let inp = {
     "isl_op":'',
     "eng_op":''
@@ -22,7 +23,7 @@
    <Heading tag="h2" >Template Generator:</Heading>
    <Hr/>
    <div class="tb p-5">
-     <InpTable bind:finalOp={inp}/>
+     <InpTable bind:finalOp={inp} bind:tg={tg}/>
    </div>
  </div>
   <div class="basis-1/2 p-10">
@@ -44,26 +45,27 @@
          },
      }}/>
      </div>
-     <Hr/> 
-       <Heading tag="h4">ENG:</Heading>
-       <CodeMirror 
-       bind:value={eng_val} 
-       theme={oneDark}
-       lineWrapping 
-       styles={{
-         "&": {
-           lineWrapping: true,
-           color: "white",
-           width: "750px",
-           height: "350px",
-           maxWidth: "100%",
-           maxHeight: "30%",
-           styleActiveLine: true,
-           matchBrackets: true,        
-       },
-     }}/>
+     {#if tg === true}
      <div>
-       
+      <Hr/> 
+        <Heading tag="h4">ENG:</Heading>
+        <CodeMirror 
+        bind:value={eng_val} 
+        theme={oneDark}
+        lineWrapping 
+        styles={{
+          "&": {
+            lineWrapping: true,
+            color: "white",
+            width: "750px",
+            height: "350px",
+            maxWidth: "100%",
+            maxHeight: "30%",
+            styleActiveLine: true,
+            matchBrackets: true,        
+          },
+        }}/> 
      </div>
+     {/if}
   </div>
 </div>
