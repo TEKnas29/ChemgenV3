@@ -8,6 +8,7 @@
     let intFV = false
     let gNum = false
     let strikeM = false
+//checkboxes
     $: intermidiateFunction = (intF ? `
         <var name=IntermediateCalculations value="<i>Note</i>: For all intermediate calculations make sure to carry two extra digits when applicable and only round your final answer to the correct number of significant digits.">
         <function name=show_int_calc_instructions list={mode}>
@@ -236,7 +237,6 @@
 //sourceList
     $: staticSourceList = sourceGen(mq,gs)
     function sourceGen(mq,gs) {
-        let finalSourceGen = ''
         let source = ''
         if(mq.length > 0){
             for(const m of mq){
@@ -284,7 +284,7 @@
                     }
                 }
             }
-            finalSourceGen += source 
+            
         }
         if(gs.length > 0){
             for(const g of gs){
@@ -332,17 +332,507 @@
                     }
                 }
             }
-            finalSourceGen += source 
         }
-        return finalSourceGen
+        return source
     }
-    $: staticSourceAnsList = ''    
-    $: staticVarsList = ''
-    $: apModuleList = ''
-    $: extraTeacher = ''
-    $: teacherAnswer = ''
-    $: teacherHTML = ''
-    $: finalAP = ''
+    $: staticSourceAnsList = sourceAnsGen(mq,gs)
+    function sourceAnsGen(mq,gs) {
+        let source = ''
+        if(mq.length > 0){
+            for(const m of mq){
+                let j = 1
+                source += `
+                <text ref=ans_I${m.id}>`
+                if (m.eb > 0) {  
+                    if (m.editortype === 1) {
+                        for (let i = 1; i <= m.eb ; i++) {  
+                            source += `\\\\set1;[]`;
+                            j += 1
+                        }
+                    } else if (m.editortype === 0) {
+                        for (let i = 1; i <= m.eb ; i++) {  
+                            source += `[ans_returned_I${m.id}_${j}]=[\\\\editbox;[]];`;
+                            j += 1
+                        }
+                    } else {
+                        source += ''
+                    }
+                }
+                if (m.ddm > 0) {  
+                    if (m.editortype === 1) {
+                        for (let i = 1; i <= m.ddm ; i++) {  
+                            source += `\\\\set1;[]`;
+                            j += 1
+                        }
+                    } else if (m.editortype === 0) {
+                        for (let i = 1; i <= m.ddm ; i++) {  
+                            source += `
+                            [ans_returned_I${m.id}_${j}]=[];
+                            `;
+                            j += 1
+                        }
+                    } else {
+                            source += ''
+                    }
+                }
+                source += "</text>"
+            }
+        }
+        if(gs.length > 0){
+            for(const g of gs){
+                let j = 1
+                source += `
+                <text ref=ans_GS${g.id}>`
+                if (g.eb > 0) {  
+                    if (g.editortype === 1) {
+                        for (let i = 1; i <= g.eb ; i++) {  
+                            source += `\\\\set1;[]`;
+                            j += 1
+                        }
+                    } else if (g.editortype === 0) {
+                        for (let i = 1; i <= g.eb ; i++) {  
+                            source += `[ans_returned_GS${g.id}_${j}]=[\\\\editbox;[]];`;
+                            j += 1
+                        }
+                    } else {
+                            source += ''
+                    }
+                }
+                if (g.ddm > 0) {  
+                    if (g.editortype === 1) {
+                        for (let i = 1; i <= g.ddm ; i++) {  
+                            source += `\\\\set1;[]`;
+                                    j += 1
+                        }
+                    } else if (g.editortype === 0) {
+                        for (let i = 1; i <= g.ddm ; i++) {  
+                            source += `
+                            [ans_returned_GS${g.id}_${j}]=[];
+                            `;
+                            j += 1
+                        }
+                    } else {
+                            source += ''
+                    }
+                }
+            source += '</text>'
+            }
+        }
+        return source
+    }    
+
+    $: staticVarsList = staticVarList(mq,gs)
+    function staticVarList(mq,gs) {
+        let source = ''
+        if(mq.length > 0){
+            for(const m of mq){
+                let j = 1
+                if (m.eb > 0) {  
+                    if (m.editortype === 1) {
+                        for (let i = 1; i <= m.eb ; i++) {  
+                            source += `
+                            <text ref=tabed_source_I${m.id}_${j}></text>
+                            `;
+                            j += 1
+                        }
+                    } else if (m.editortype === 0) {
+                        for (let i = 1; i <= m.eb ; i++) {  
+                            source += `
+                            <text ref=formed_source_I${m.id}_${j}></text>
+                            `;
+                            j += 1
+                        }
+                    } else {
+                        source += ''
+                    }
+                }
+                if (m.ddm > 0) {  
+                    if (m.editortype === 1) {
+                        for (let i = 1; i <= m.ddm ; i++) {  
+                            source += `
+                            <text ref=tabed_source_I${m.id}_${j}></text>
+                                    `;
+                            j += 1
+                        }
+                    } else if (m.editortype === 0) {
+                        for (let i = 1; i <= m.ddm ; i++) {  
+                            source += `
+                            <text ref=formed_source_I${m.id}_${j}></text>
+                                    `;
+                            j += 1
+                        }
+                    } else {
+                            source += ''
+                    }
+                }
+            }
+            
+        }
+        if(gs.length > 0){
+            for(const g of gs){
+                let j = 1
+                if (g.eb > 0) {  
+                    if (g.editortype === 1) {
+                        for (let i = 1; i <= g.eb ; i++) {  
+                            source += `
+                            <text ref=tabed_source_GS${g.id}_${j}></text>
+                            `;
+                            j += 1
+                        }
+                    } else if (g.editortype === 0) {
+                        for (let i = 1; i <= g.eb ; i++) {  
+                            source += `
+                            <text ref=formed_source_GS${g.id}_${j}></text>
+                            `;
+                            j += 1
+                        }
+                    } else {
+                            source += ''
+                    }
+                }
+                if (g.ddm > 0) {  
+                    if (g.editortype === 1) {
+                        for (let i = 1; i <= g.ddm ; i++) {  
+                            source += `
+                            <text ref=tabed_source_GS${g.id}_${j}></text>
+                                    `;
+                                    j += 1
+                        }
+                    } else if (g.editortype === 0) {
+                        for (let i = 1; i <= g.ddm ; i++) {  
+                            source += `
+                            <text ref=formed_source_GS${g.id}_${j}></text>
+                                    `;
+                                    j += 1
+                        }
+                    } else {
+                            source += ''
+                    }
+                }
+            }
+        }
+        return source
+    }
+    
+//AP 
+    $: apModuleList = ansProModuleList(mq,gs)
+    function ansProModuleList(mq,gs) {
+        let list = []
+        if (mq.length > 0) {
+            for(const m of mq){
+                if (m.editortype !== '') {
+                    if (m.editortype < 3) {
+                        const list_a = `I${m.id}:{"${editortype[m.editortype]['name']}_I${m.id}"}`
+                        list.push(list_a)
+                    }else{
+                        const list_a = `I${m.id}:{"${editortype[2]['name']}_I${m.id}"}`
+                        list.push(list_a)
+                    }
+                }
+            }
+        }
+        if (gs.length > 0) {
+            for(const g of gs){
+                if (g.editortype !== '') {
+                    if (g.editortype < 3) {
+                        const list_a = `GS${g.id}:{"${editortype[g.editortype]['name']}_GS${g.id}"}`
+                        list.push(list_a)
+                    }else{
+                        const list_a = `GS${g.id}:{"${editortype[2]['name']}_GS${g.id}"}`
+                        list.push(list_a)
+                    }
+                }
+            }
+        }
+        return `<return value=#{${list.join(",")}>`
+    }
+    $: extraTeacher = extraTAcheck(mq,gs)
+    function extraTAcheck(mq,gs) {
+        let eta = ''
+        for(const m of mq){
+            if(m.editortype===2 || m.editortype===4 || m.editortype===5 ){
+                eta += `<var name=answer_list_I${m.id} value=@toolLayout.getAnswerRecallFromAuthoring("@tool_TA_I${m.id};", "@item_name;")>
+                        <var name=recall_hash_I${m.id} value=#{
+                            "answers":{"@answer_list_I${m.id};"},
+                            "tests":{
+                            #{"name":"structureType", "structure": {"skeleton"}},
+                            #{"name": "reversibleGroups", "tolerance": 10}
+                            }
+                        }>
+                        <var name=fin_recall_hash_I${m.id} value="@userf.stringifyJSJSON(@recall_hash_I${m.id};);">`
+            }
+        }
+        for(const g of gs){
+            if(g.editortype===2 || g.editortype===4 || g.editortype===5 ){
+                eta += `<var name=answer_list_GS${g.id} value=@toolLayout.getAnswerRecallFromAuthoring("@tool_TA_GS${g.id};", "@item_name;")>
+                        <var name=recall_hash_GS${g.id} value=#{
+                            "answers":{"@answer_list_GS${g.id};"},
+                            "tests":{
+                            #{"name":"structureType", "structure": {"skeleton"}},
+                            #{"name": "reversibleGroups", "tolerance": 10}
+                            }
+                        }>
+                        <var name=fin_recall_hash_GS${g.id} value="@userf.stringifyJSJSON(@recall_hash_GS${g.id};);">`
+            }
+        }
+        return eta
+    }
+    $: teacherAnswer = getTA(mq,gs)
+    function getTA(mq, gs) {
+        let TA = '';
+        for(const m of mq){
+            if (m.editortype>=0 && m.editortype !== '') {
+                switch (m.editortype) {
+                    case 0:
+                        if (m.eb){
+                            TA += `
+                                <if cond=("@mode;" == "server_if")>
+                                    <var name=teacherAnswerHash["formed_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value=#{ans_returned_I${m.id}_1:"\\\\editbox;[]"}>
+                                <else>
+                                    <var name=teacherAnswerHash["formed_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value="&(text(ans_I${m.id}));">
+                                </if>`;
+                            } else {
+                            TA += `
+                                <var name=teacherAnswerHash["formed_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value="&(text(ans_I${m.id}));">`;
+                            }
+                        break;
+                    case 1:
+                        TA +=`\n<var name=teacherAnswerHash["tabed_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value="&(text(ans_I${m.id}));">`
+                        break;
+                    case 2:
+                        TA += `\n<var name=teacherAnswerHash["moleced_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value=("@mode" == "solve" ? "@answer_list_I${m.id};" : "@fin_recall_hash_I${m.id};")>`
+                            break;
+                    case 3:
+                        TA += `\n<var name=teacherAnswerHash["moleced_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value=("@mode" == "solve" ? "@answer_list_I${m.id};" : "@fin_recall_hash_I${m.id};")>`
+                        break;
+                    case 4:
+                        TA += `\n<var name=teacherAnswerHash["moleced_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value="@answer_list_I${m.id};">`
+                        break;
+                    case 5:
+                        TA += `\n<var name=teacherAnswerHash["moleced_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value=("@mode" == "solve" ? "@answer_list_I${m.id};" : "@fin_recall_hash_I${m.id};")>`
+                        break;
+                
+                    default:
+                        break;
+                } 
+            } 
+        }
+        for(const g of gs){
+            if (g.editortype>=0 && g.editortype !== '') {
+                switch (g.editortype) {
+                    case 0:
+                        TA += `\n<var name=teacherAnswerHash["formed_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value="&(text(ans_GS${g.id}));">`;
+                        break;
+                    case 1:
+                        TA +=`\n<var name=teacherAnswerHash["tabed_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value="&(text(ans_GS${g.id}));">`
+                        break;
+                    case 2:
+                        TA += `\n<var name=teacherAnswerHash["moleced_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value=("@mode" == "solve" ? "@answer_list_GS${g.id};" : "@fin_recall_hash_GS${g.id};")>`
+                            break;
+                    case 3:
+                        TA += `\n<var name=teacherAnswerHash["moleced_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value=("@mode" == "solve" ? "@answer_list_GS${g.id};" : "@fin_recall_hash_GS${g.id};")>`
+                        break;
+                    case 4:
+                        TA += `\n<var name=teacherAnswerHash["moleced_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value="@answer_list_GS${g.id};">`
+                        break;
+                    case 5:
+                        TA += `\n<var name=teacherAnswerHash["moleced_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value=("@mode" == "solve" ? "@answer_list_GS${g.id};" : "@fin_recall_hash_GS${g.id};")>`
+                        break;
+                
+                    default:
+                        break;
+                } 
+            } 
+        }
+        return TA
+    }
+    $: teacherHTML = htmlTeacherModule(mq,gs)
+    function htmlTeacherModule(mq,gs){
+        let TH = ''
+        for(const m of mq){
+            if (m.editortype <= 1) {
+                TH += `
+        <if cond=("@partRequested;" == "I${m.id}")>
+          <var name=moleced_display_I${m.id}_TA value=@toolLayout.createAuthoringTool("moleced_disp_TA_I${m.id}","@tool_TA_I${m.id};","@item_name;");>
+          <var name=teacherAnswerHTML value="@moleced_display_I${m.id}_TA;">
+        </if>`;
+            }else{
+                TH += `
+        <if cond=("@partRequested;" == "I${m.id}")>
+          <var name=${editortype[m.editortype]['name']}_display_I${m.id}_TA value=@.toolLayout.createTool('${editortype[m.editortype]['name']}','${editortype[m.editortype]['name']}_I${m.id}_TA','display',#{recall:text(),fillAnswer:"&(text(ans_I${m.id}))"});>
+          <var name=teacherAnswerHTML value="@${editortype[m.editortype]['name']}_display_I${m.id}_TA;">
+        </if>`
+            }
+        }
+        for(const g of gs){
+            if (g.editortype <= 1) {
+                TH += `
+        <if cond=("@partRequested;" == "GS${g.id}")>
+          <var name=moleced_display_GS${g.id}_TA value=@toolLayout.createAuthoringTool("moleced_disp_TA_GS${g.id}","@tool_TA_GS${g.id};","@item_name;");>
+          <var name=teacherAnswerHTML value="@moleced_display_GS${g.id}_TA;">
+        </if>`;
+            }else{
+                TH += `
+        <if cond=("@partRequested;" == "GS${g.id}")>
+          <var name=${editortype[g.editortype]['name']}_display_GS${g.id}_TA value=@.toolLayout.createTool('${editortype[g.editortype]['name']}','${editortype[g.editortype]['name']}_GS${g.id}_TA','display',#{recall:text(),fillAnswer:"&(text(ans_GS${g.id}))"});>
+          <var name=teacherAnswerHTML value="@${editortype[g.editortype]['name']}_display_GS${g.id}_TA;">
+        </if>`
+            }
+        }
+        return TH
+    }
+    $: finalAP = finalAP1(mq,gs)
+    function finalAP1(mq,gs) {
+        let AP = ''
+        for(const m of mq){
+            let splitval = ''
+            let generalRule = ''
+            const  apComment = `<!-- *************************************** Answer processing of I${m.id} *************************************** -->`;
+            if (m.editortype === 1) { //tabed
+                splitval += `      &(@multiFeedback.splitAnswer3("student_answer","@userf.removeSet1("@studentAnswer;");"));
+                            &(@multiFeedback.splitAnswer3("teacher_answer","@userf.removeSet1("@teacherAnswer;");"));`;
+                            for (i = 1; i <= m.eb; i++) {
+                                let feedbackStatement = ``;
+                                if (m.eb + m.ddm > 1) {
+                                if (i < 10) {
+                                    feedbackStatement = `
+                                    &(@itemAnspro.storeFeedback("I${m.id}.0${i}"))
+                                    &(@itemAnspro.registerFeedback("I${m.id}.0${i}"))`;
+                                    } else {
+                                        feedbackStatement = `
+                                    &(@itemAnspro.storeFeedback("I${m.id}.${i}"))
+                                    &(@itemAnspro.registerFeedback("I${m.id}.${i}"))`;
+                                    }
+                                }
+                                generalRule += `
+                                <evaluation rule=arith2 student="@student_answer${i};" teacher="@teacher_answer${i};">
+                                <feedback>
+                                    <catch name=value.*>
+                                    <catch name=type.*>
+                                    <catch name=reduce.*>
+                                    <catch name=convention.*>
+                                &(@userFeedback.fracSimplifyDivByOne(););
+                                </feedback>${feedbackStatement}`;
+                            }
+                            for (i = m.eb + 1; i <= m.eb + m.ddm; i++) {
+                                    let feedbackStatement = ``;
+                                    if (m.eb + m.ddm > 1) {
+                                    if (i < 10) {
+                                        feedbackStatement = `
+                                    &(@itemAnspro.storeFeedback("I${m.id}.0${i}"))
+                                    &(@itemAnspro.registerFeedback("I${m.id}.0${i}"))`;
+                                    } else {
+                                        feedbackStatement = `
+                                    &(@itemAnspro.storeFeedback("I${m.id}.${i}"))
+                                    &(@itemAnspro.registerFeedback("I${m.id}.${i}"))`;
+                                    }
+                                    }
+                                    generalRule += `
+                                    <evaluation rule=choice student="@('.student_ans_returned_I${m.id}_${i}');" teacher="@('.teacher_ans_returned_I${m.id}_${i}');">
+                                    <feedback></feedback>${feedbackStatement}`;
+                                }
+
+            }
+            if (m.editortype <= 1) { //formed, tabed
+                if (m.eb) {
+                splitval += `
+                &(@multiFeedback.splitAnswerEditBox("student_answer","@studentAnswer;"));
+                &(@multiFeedback.splitAnswerEditBox("teacher_answer","@teacherAnswer;"));`;
+                }
+                if (m.ddm) {
+                splitval +=`
+                &(@userf.splitReturnValueByName("@studentAnswer;",".student_"));
+                &(@userf.splitReturnValueByName("@teacherAnswer;",".teacher_"));`;
+                }
+                for (i = 1; i <= m.eb; i++) {
+                                let feedbackStatement = ``;
+                                if (m.eb + m.ddm > 1) {
+                                if (i < 10) {
+                                    feedbackStatement = `
+                                    &(@itemAnspro.storeFeedback("I${m.id}.0${i}"))
+                                    &(@itemAnspro.registerFeedback("I${m.id}.0${i}"))`;
+                                    } else {
+                                        feedbackStatement = `
+                                    &(@itemAnspro.storeFeedback("I${m.id}.${i}"))
+                                    &(@itemAnspro.registerFeedback("I${m.id}.${i}"))`;
+                                    }
+                                }
+                                generalRule += `
+                                <evaluation rule=arith2 student="@student_answer${i};" teacher="@teacher_answer${i};">
+                                <feedback>
+                                    <catch name=value.*>
+                                    <catch name=type.*>
+                                    <catch name=reduce.*>
+                                    <catch name=convention.*>
+                                &(@userFeedback.fracSimplifyDivByOne(););
+                                </feedback>${feedbackStatement}`;
+                            }
+                            for (i = m.eb + 1; i <= m.eb + m.ddm; i++) {
+                                    let feedbackStatement = ``;
+                                    if (m.eb + m.ddm > 1) {
+                                    if (i < 10) {
+                                        feedbackStatement = `
+                                    &(@itemAnspro.storeFeedback("I${m.id}.0${i}"))
+                                    &(@itemAnspro.registerFeedback("I${m.id}.0${i}"))`;
+                                    } else {
+                                        feedbackStatement = `
+                                    &(@itemAnspro.storeFeedback("I${m.id}.${i}"))
+                                    &(@itemAnspro.registerFeedback("I${m.id}.${i}"))`;
+                                    }
+                                    }
+                                    generalRule += `
+                                    <evaluation rule=choice student="@('.student_ans_returned_I${m.id}_${i}');" teacher="@('.teacher_ans_returned_I${m.id}_${i}');">
+                                    <feedback></feedback>${feedbackStatement}`;
+                                }     
+            }else{ //moleced, mechanism, reaction
+                splitval = ''
+                switch (m.editortype) {
+                    case 2:
+                        generalRule +=  `
+                    <evaluation rule=moleced_simple student="@studentAnswer" teacher="@teacherAnswer">
+                    <feedback>
+                        <catch name={value.*,type.*,reduce.*,system.*,convention.*}>
+                        <catch cond=(@itemAnspro.getCurrentFeedbackField('system');!='NullStudentMoleced' && @itemAnspro.getCurrentFeedbackField('value');!='Correct') redirect={system._,syntax._,type._,value.Wrong}>
+                    </feedback>`
+                        break;
+                    case 3:
+                        generalRule +=`
+                        <evaluation rule=mechanism_manager student="@studentAnswer" teacher="@teacherAnswer">
+                            <feedback>
+                            <catch name={value.*,type.*,reduce.*,system.*,convention.*}>
+                            <catch cond=(@itemAnspro.getCurrentFeedbackField('system');!='NullStudentMoleced' && @itemAnspro.getCurrentFeedbackField('value');!='Correct') redirect={system._,syntax._,type._,value.Wrong}>
+                        </feedback>
+                        `
+                        break;
+                    case 4:
+                        generalRule += `
+                        <evaluation rule=reaction_manager student="@studentAnswer" teacher="@teacherAnswer">
+                         <feedback> </feedback>`
+                         break;
+                    case 5:
+                        generalRule += `
+                        <evaluation rule=reaction_manager student="@studentAnswer" teacher="@teacherAnswer">
+                         <feedback> </feedback>`
+                        break;
+                    default:
+                        break;
+                }
+                
+            }
+
+            AP += `
+                                ${apComment}
+                                <function name=anspro_${editortype[m.editortype]['name']}_I${m.id} list={studentAnswer,teacherAnswer}>
+                            ${spiltval}
+                            ${generalRule}
+                                </function>
+                                `;
+        }
+        for(const g of gs){
+
+        }
+        return AP
+    }
 
 //template
     $: isl =
