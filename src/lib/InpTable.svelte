@@ -823,12 +823,154 @@
             AP += `
                                 ${apComment}
                                 <function name=anspro_${editortype[m.editortype]['name']}_I${m.id} list={studentAnswer,teacherAnswer}>
-                            ${spiltval}
+                            ${splitval}
                             ${generalRule}
                                 </function>
                                 `;
         }
         for(const g of gs){
+            let splitval = ''
+            let generalRule = ''
+            const  apComment = `<!-- *************************************** Answer processing of GS${g.id} *************************************** -->`;
+            if (g.editortype === 1) { //tabed
+                splitval += `      &(@multiFeedback.splitAnswer3("student_answer","@userf.removeSet1("@studentAnswer;");"));
+                            &(@multiFeedback.splitAnswer3("teacher_answer","@userf.removeSet1("@teacherAnswer;");"));`;
+                            for (i = 1; i <= g.eb; i++) {
+                                let feedbackStatement = ``;
+                                if (g.eb + g.ddm > 1) {
+                                if (i < 10) {
+                                    feedbackStatement = `
+                                    &(@itemAnspro.storeFeedback("GS${g.id}.0${i}"))
+                                    &(@itemAnspro.registerFeedback("GS${g.id}.0${i}"))`;
+                                    } else {
+                                        feedbackStatement = `
+                                    &(@itemAnspro.storeFeedback("GS${g.id}.${i}"))
+                                    &(@itemAnspro.registerFeedback("GS${g.id}.${i}"))`;
+                                    }
+                                }
+                                generalRule += `
+                                <evaluation rule=arith2 student="@student_answer${i};" teacher="@teacher_answer${i};">
+                                <feedback>
+                                    <catch name=value.*>
+                                    <catch name=type.*>
+                                    <catch name=reduce.*>
+                                    <catch name=convention.*>
+                                &(@userFeedback.fracSimplifyDivByOne(););
+                                </feedback>${feedbackStatement}`;
+                            }
+                            for (i = g.eb + 1; i <= g.eb + g.ddm; i++) {
+                                    let feedbackStatement = ``;
+                                    if (g.eb + g.ddm > 1) {
+                                    if (i < 10) {
+                                        feedbackStatement = `
+                                    &(@itemAnspro.storeFeedback("GS${g.id}.0${i}"))
+                                    &(@itemAnspro.registerFeedback("GS${g.id}.0${i}"))`;
+                                    } else {
+                                        feedbackStatement = `
+                                    &(@itemAnspro.storeFeedback("GS${g.id}.${i}"))
+                                    &(@itemAnspro.registerFeedback("GS${g.id}.${i}"))`;
+                                    }
+                                    }
+                                    generalRule += `
+                                    <evaluation rule=choice student="@('.student_ans_returned_GS${g.id}_${i}');" teacher="@('.teacher_ans_returned_GS${g.id}_${i}');">
+                                    <feedback></feedback>${feedbackStatement}`;
+                                }
+
+            }
+            if (g.editortype <= 1) { //formed, tabed
+                if (g.eb) {
+                splitval += `
+                &(@multiFeedback.splitAnswerEditBox("student_answer","@studentAnswer;"));
+                &(@multiFeedback.splitAnswerEditBox("teacher_answer","@teacherAnswer;"));`;
+                }
+                if (g.ddm) {
+                splitval +=`
+                &(@userf.splitReturnValueByName("@studentAnswer;",".student_"));
+                &(@userf.splitReturnValueByName("@teacherAnswer;",".teacher_"));`;
+                }
+                for (i = 1; i <= g.eb; i++) {
+                                let feedbackStatement = ``;
+                                if (g.eb + g.ddm > 1) {
+                                if (i < 10) {
+                                    feedbackStatement = `
+                                    &(@itemAnspro.storeFeedback("GS${g.id}.0${i}"))
+                                    &(@itemAnspro.registerFeedback("GS${g.id}.0${i}"))`;
+                                    } else {
+                                        feedbackStatement = `
+                                    &(@itemAnspro.storeFeedback("GS${g.id}.${i}"))
+                                    &(@itemAnspro.registerFeedback("GS${g.id}.${i}"))`;
+                                    }
+                                }
+                                generalRule += `
+                                <evaluation rule=arith2 student="@student_answer${i};" teacher="@teacher_answer${i};">
+                                <feedback>
+                                    <catch name=value.*>
+                                    <catch name=type.*>
+                                    <catch name=reduce.*>
+                                    <catch name=convention.*>
+                                &(@userFeedback.fracSimplifyDivByOne(););
+                                </feedback>${feedbackStatement}`;
+                            }
+                            for (i = g.eb + 1; i <= g.eb + g.ddm; i++) {
+                                    let feedbackStatement = ``;
+                                    if (g.eb + g.ddm > 1) {
+                                    if (i < 10) {
+                                        feedbackStatement = `
+                                    &(@itemAnspro.storeFeedback("GS${g.id}.0${i}"))
+                                    &(@itemAnspro.registerFeedback("GS${g.id}.0${i}"))`;
+                                    } else {
+                                        feedbackStatement = `
+                                    &(@itemAnspro.storeFeedback("GS${g.id}.${i}"))
+                                    &(@itemAnspro.registerFeedback("GS${g.id}.${i}"))`;
+                                    }
+                                    }
+                                    generalRule += `
+                                    <evaluation rule=choice student="@('.student_ans_returned_GS${g.id}_${i}');" teacher="@('.teacher_ans_returned_GS${g.id}_${i}');">
+                                    <feedback></feedback>${feedbackStatement}`;
+                                }     
+            }else{ //moleced, mechanism, reaction
+                splitval = ''
+                switch (g.editortype) {
+                    case 2:
+                        generalRule +=  `
+                    <evaluation rule=moleced_simple student="@studentAnswer" teacher="@teacherAnswer">
+                    <feedback>
+                        <catch name={value.*,type.*,reduce.*,system.*,convention.*}>
+                        <catch cond=(@itemAnspro.getCurrentFeedbackField('system');!='NullStudentMoleced' && @itemAnspro.getCurrentFeedbackField('value');!='Correct') redirect={system._,syntax._,type._,value.Wrong}>
+                    </feedback>`
+                        break;
+                    case 3:
+                        generalRule +=`
+                        <evaluation rule=mechanism_manager student="@studentAnswer" teacher="@teacherAnswer">
+                            <feedback>
+                            <catch name={value.*,type.*,reduce.*,system.*,convention.*}>
+                            <catch cond=(@itemAnspro.getCurrentFeedbackField('system');!='NullStudentMoleced' && @itemAnspro.getCurrentFeedbackField('value');!='Correct') redirect={system._,syntax._,type._,value.Wrong}>
+                        </feedback>
+                        `
+                        break;
+                    case 4:
+                        generalRule += `
+                        <evaluation rule=reaction_manager student="@studentAnswer" teacher="@teacherAnswer">
+                         <feedback> </feedback>`
+                         break;
+                    case 5:
+                        generalRule += `
+                        <evaluation rule=reaction_manager student="@studentAnswer" teacher="@teacherAnswer">
+                         <feedback> </feedback>`
+                        break;
+                    default:
+                        break;
+                }
+                
+            }
+
+            AP += `
+                                ${apComment}
+                                <function name=anspro_${editortype[g.editortype]['name']}_GS${g.id} list={studentAnswer,teacherAnswer}>
+                            ${splitval}
+                            ${generalRule}
+                                </function>
+                                `;
 
         }
         return AP
