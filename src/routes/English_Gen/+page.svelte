@@ -112,6 +112,7 @@ struct check list
                 const nreg5 = new RegExp("\{","g")
                 const nreg6 = new RegExp("^\{","g")
                 const nreg7 = new RegExp("\,$","g")
+                const nreg8 = new RegExp("\,\}","g")
 
                 let x1 = x
                 .replace(nreg1,'_')
@@ -128,9 +129,10 @@ struct check list
                                 return `${p},1,`
                             })
                             .replace(nreg4,'')
-                            .replace(nreg5,'\{\,')
+                            .replace(nreg5,'\{')
                             .replace(nreg6,'1,\{')
                             .replace(nreg7,'')
+                            .replace(nreg8,'\}')
                 chk7 += `\n<var name=chem_${x1} value=@userfChemistry.formatChemEquation({{${x2}}},1)>`
                 }
                 
