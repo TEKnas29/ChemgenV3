@@ -1180,7 +1180,7 @@
       const cmnt = `<!-- *****************GS${g.id}-text************* -->`
       const part_text = engCheck(g.tx)
       finalOp += `\n\t${cmnt}
-      <text ref=I${g.id}_text1>${part_text}</text>`
+      <text ref=GS${g.id}_text1>${part_text}</text>`
     }
     return finalOp
   }
