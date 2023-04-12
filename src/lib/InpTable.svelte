@@ -1161,12 +1161,50 @@
     { value: 4, name: "reaction w/o arrow" },
     { value: 5, name: "reaction" },
   ];
-
+  
+  $: parts = partsGen(mq)
+  function partsGen(mq) {
+    let finalOp = ''
+    for(const m of mq){
+      const cmnt = `<!-- *****************I${m.id}-text************* -->`
+      const part_text = engCheck(m.tx)
+      finalOp += `\n\t${cmnt}
+      <text ref=I${m.id}_text1>${part_text}</text>`
+    }
+    return finalOp
+  }
+  $: GSparts = GSpartsGen(gs)
+  function GSpartsGen(gs) {
+    let finalOp = ''
+    for(const g of gs){
+      const cmnt = `<!-- *****************GS${g.id}-text************* -->`
+      const part_text = engCheck(g.tx)
+      finalOp += `\n\t${cmnt}
+      <text ref=I${g.id}_text1>${part_text}</text>`
+    }
+    return finalOp
+  }
+  function engCheck(tx) {
+    let op = tx
+    
+    return op
+  }
+  $: eng = `
+  <!-- *****************Q-text************* -->
+    <text ref=Qn_text1></text>
+  <!-- *****************Hint************* -->
+    <text ref=Hint_text></text>
+  <!-- *****************Explainantion************* -->
+    <text ref=EP_text1><p></p></text>
+    ${parts}
+    ${GSparts}
+  
+  `
   function addQ() {
-    mq = [...mq, { id: ++mq.length, editortype: "", try: 3, eb: 0, ddm: 0 }];
+    mq = [...mq, { id: ++mq.length, editortype: "", try: 3, eb: 0, ddm: 0, tx:'' }];
   }
   function addG() {
-    gs = [...gs, { id: ++gs.length, editortype: "", try: 3, eb: 0, ddm: 0 }];
+    gs = [...gs, { id: ++gs.length, editortype: "", try: 3, eb: 0, ddm: 0, tx:'' }];
   }
   // function removeQ(id) {
   //     mq = mq.filter(item => item.id !== id)
@@ -1214,15 +1252,17 @@
   $: liveCheker(mq, gs);
   $: {
     finalOp.isl_op = isl;
-    finalOp.eng_op = JSON.stringify(gs);
+    finalOp.eng_op = eng;
   }
 </script>
 
 <div class="inpTable">
+    <!-- Add buttons -->
   <ButtonGroup>
     <Button outline color="blue" on:click={addQ}>Add Question</Button>
     <Button outline color="blue" on:click={addG}>Add GS Question</Button>
   </ButtonGroup>
+  <!-- checkboxes -->
   <ButtonGroup>
     <Checkbox class="p-1" bind:checked={intF}>Intermediate Inst</Checkbox>
     <Checkbox class="p-1" bind:checked={intFV}>Intermediate Value</Checkbox>
@@ -1271,6 +1311,7 @@
           type="text"
           placeholder="I{m.id}"
           class="w-auto rounded-none m-0.5"
+          bind:value={m.tx}
         />
       {/if}
     </div>
@@ -1320,6 +1361,7 @@
           type="text"
           placeholder="GS{g.id}"
           class="w-auto rounded-none m-0.5"
+          bind:value={g.tx}
         />
       {/if}
     </div>
