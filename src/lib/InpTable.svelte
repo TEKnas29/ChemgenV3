@@ -1009,7 +1009,7 @@
         }
       }
       
-      if (m.editortype !== '') {     
+      if (g.editortype !== '') {     
           AP += `${apComment}
                 <function name=anspro_${editortype[g.editortype]["name"]}_GS${g.id} list={studentAnswer,teacherAnswer}>
             ${splitval}
