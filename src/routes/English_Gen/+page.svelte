@@ -41,7 +41,7 @@ struct check list
         return final
     }
     function setf1(para) {
-        const numChk = new RegExp("(\\b\\d\\.\\d+\\b)","gm")
+        const numChk = new RegExp("(\\b\\d+\\.\\d+\\b)","gm")
         let f;
         let fp = "<var name=f1 value={"
         if(f =  para.match(numChk)){
@@ -229,7 +229,7 @@ struct check list
         const bCheck1 = new RegExp("\\(","gm") // "(" check
         const bCheck2 = new RegExp("\\)","gm") // ")" check
         const betweenQuotes = new RegExp("\'(.*?)\'",'gm') //values between quotes
-        const numChk = new RegExp("(\\b\\d+\\.\\d+\\b)|(\\b\\d+\\b)(°)?","gm")
+        const numChk = new RegExp("(\\b\\d+\\.\\d+\\b)|(\\b\\d+\\b)(°)?","gm") //float and number check 
         const spChk = new RegExp("(?:(?!\n)\\s+)","gm")
         const italiano = new RegExp("\\b(tert)\\b","gm")
         const sps = new RegExp("\\b(sp[2|3])|(SN2)\\b","gm")
