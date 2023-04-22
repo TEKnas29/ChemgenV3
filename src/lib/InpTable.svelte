@@ -675,49 +675,53 @@
   function htmlTeacherModule(mq, gs) {
     let TH = "";
     for (const m of mq) {
-      if (m.editortype <= 1) {
-        TH += `
-        <if cond=("@partRequested;" == "I${m.id}")>
-          <var name=moleced_display_I${m.id}_TA value=@toolLayout.createAuthoringTool("moleced_disp_TA_I${m.id}","@tool_TA_I${m.id};","@item_name;");>
-          <var name=teacherAnswerHTML value="@moleced_display_I${m.id}_TA;">
-        </if>`;
-      } else {
-        TH += `
-        <if cond=("@partRequested;" == "I${m.id}")>
-          <var name=${editortype[m.editortype]["name"]}_display_I${
-          m.id
-        }_TA value=@.toolLayout.createTool('${
-          editortype[m.editortype]["name"]
-        }','${editortype[m.editortype]["name"]}_I${
-          m.id
-        }_TA','display',#{recall:text(),fillAnswer:"&(text(ans_I${m.id}))"});>
-          <var name=teacherAnswerHTML value="@${
+      if (m.editortype !== '') {
+        if (m.editortype >= 1) {
+          TH += `
+          <if cond=("@partRequested;" == "I${m.id}")>
+            <var name=moleced_display_I${m.id}_TA value=@toolLayout.createAuthoringTool("moleced_disp_TA_I${m.id}","@tool_TA_I${m.id};","@item_name;");>
+            <var name=teacherAnswerHTML value="@moleced_display_I${m.id}_TA;">
+          </if>`;
+        } else {
+          TH += `
+          <if cond=("@partRequested;" == "I${m.id}")>
+            <var name=${editortype[m.editortype]["name"]}_display_I${
+            m.id
+          }_TA value=@.toolLayout.createTool('${
             editortype[m.editortype]["name"]
-          }_display_I${m.id}_TA;">
-        </if>`;
+          }','${editortype[m.editortype]["name"]}_I${
+            m.id
+          }_TA','display',#{recall:text(),fillAnswer:"&(text(ans_I${m.id}))"});>
+            <var name=teacherAnswerHTML value="@${
+              editortype[m.editortype]["name"]
+            }_display_I${m.id}_TA;">
+          </if>`;
+        }
       }
     }
     for (const g of gs) {
-      if (g.editortype <= 1) {
-        TH += `
-        <if cond=("@partRequested;" == "GS${g.id}")>
-          <var name=moleced_display_GS${g.id}_TA value=@toolLayout.createAuthoringTool("moleced_disp_TA_GS${g.id}","@tool_TA_GS${g.id};","@item_name;");>
-          <var name=teacherAnswerHTML value="@moleced_display_GS${g.id}_TA;">
-        </if>`;
-      } else {
-        TH += `
-        <if cond=("@partRequested;" == "GS${g.id}")>
-          <var name=${editortype[g.editortype]["name"]}_display_GS${
-          g.id
-        }_TA value=@.toolLayout.createTool('${
-          editortype[g.editortype]["name"]
-        }','${editortype[g.editortype]["name"]}_GS${
-          g.id
-        }_TA','display',#{recall:text(),fillAnswer:"&(text(ans_GS${g.id}))"});>
-          <var name=teacherAnswerHTML value="@${
+      if (g.editortype !== '') {        
+        if (g.editortype >= 1) {
+          TH += `
+          <if cond=("@partRequested;" == "GS${g.id}")>
+            <var name=moleced_display_GS${g.id}_TA value=@toolLayout.createAuthoringTool("moleced_disp_TA_GS${g.id}","@tool_TA_GS${g.id};","@item_name;");>
+            <var name=teacherAnswerHTML value="@moleced_display_GS${g.id}_TA;">
+          </if>`;
+        } else {
+          TH += `
+          <if cond=("@partRequested;" == "GS${g.id}")>
+            <var name=${editortype[g.editortype]["name"]}_display_GS${
+            g.id
+          }_TA value=@.toolLayout.createTool('${
             editortype[g.editortype]["name"]
-          }_display_GS${g.id}_TA;">
-        </if>`;
+          }','${editortype[g.editortype]["name"]}_GS${
+            g.id
+          }_TA','display',#{recall:text(),fillAnswer:"&(text(ans_GS${g.id}))"});>
+            <var name=teacherAnswerHTML value="@${
+              editortype[g.editortype]["name"]
+            }_display_GS${g.id}_TA;">
+          </if>`;
+        }
       }
     }
     return TH;
@@ -1024,135 +1028,133 @@
   }
 
   //template
-  $: isl = `
-        <def>
-            <include module=userfChemistry>
-            ${intermidiateFunction}${intermidiateFunctionValue}${generateNumListFunction}${stikeMathFunction}
-        </def>
+  $: isl = `<def>
+    <include module=userfChemistry>
+    ${intermidiateFunction}${intermidiateFunctionValue}${generateNumListFunction}${stikeMathFunction}
+</def>
 
-        <description>
-        <label name=level value={}>
-        <label name=curriculum value={}>
-        <label name=under value={}>
-        <label name=thesaurus value={}>
-        </description>
+<description>
+  <label name=level value={}>
+  <label name=curriculum value={}>
+  <label name=under value={}>
+  <label name=thesaurus value={}>
+</description>
 
-        <ITEM TITLE="@Title">
+<ITEM TITLE="@Title">
 
-        <INSTANCE>
-            <integer name=inst from=1 to=10>
-        </INSTANCE>
-        
-        <REQUIREMENT>
-        </REQUIREMENT>
+  <INSTANCE>
+      <integer name=inst from=1 to=10>
+  </INSTANCE>
 
-        <!-- *************************************** Sequence Block ***************************************-->
-        <var name=item_instance_values value={"@inst;"}>
-        <SEQUENCE INDEX=history>
-            <SIGNATURE NAME=@autoSequenceSignatureName() VALUE="@formatAutoSequenceSignature(@item_instance_values;)">
-        </SEQUENCE>
+  <REQUIREMENT>
+  </REQUIREMENT>
 
-        <REQUIREMENT>
-            <REQUIRES COND=@testAutoSequenceRequirement(@item_instance_values;)>
-        </REQUIREMENT>
+  <!-- *************************************** Sequence Block ***************************************-->
+  <var name=item_instance_values value={"@inst;"}>
+  <SEQUENCE INDEX=history>
+      <SIGNATURE NAME=@autoSequenceSignatureName() VALUE="@formatAutoSequenceSignature(@item_instance_values;)">
+  </SEQUENCE>
 
-        <QUESTION>
-            <function name=TrunkModule list={}>
-            <def module=".">
-            
-                <!-- ###############################<< Styling >>###############################-->
-                <var name=iB value="@userf.indent_begin();">
-                <var name=iE value="@userf.indent_end();">
-                <var name=nlHint value="@.newLineHint;">
-                <var name=xl value="@userf.xlist();">
+  <REQUIREMENT>
+      <REQUIRES COND=@testAutoSequenceRequirement(@item_instance_values;)>
+  </REQUIREMENT>
 
-                <!-- ###############################<< Var >>###############################-->
-                
-                <!-- ###############################<< editor >>###############################-->
-                ${staticSourceList}
-                
-                <!-- ###############################<< editor_ans >>###############################-->
-                ${staticSourceAnsList}
-                
-            </def> 
-            </function>
+  <QUESTION>
+      <function name=TrunkModule list={}>
+      <def module=".">
+      
+          <!-- ###############################<< Styling >>###############################-->
+          <var name=iB value="@userf.indent_begin();">
+          <var name=iE value="@userf.indent_end();">
+          <var name=nlHint value="@.newLineHint;">
+          <var name=xl value="@userf.xlist();">
 
-            <function name=StatementSteps list={}>
-            ${statementStepsList}
-            </function>
-            ${triesModule}
-            <function name=StatementModule list={}>
-            <def module="."> 
-            
-                <!-- *************************************** Main Question ***************************************-->
-                <function name=StatementModule_Main list={modeRequested}>
-                <TEXT REF=part_qn>
-                    <p>&(text(I1_text1));</p>
-                </TEXT>
-                <text ref=debug>
-                    <hr>
-                    <br>inst generation - &(@item_instance_values;)
-                    <br>
-                    <hr>
-                </text>
-                <TEXT REF=STATEMENT>
-                    %debug;
-                    <p>%Qn_text1;</p>
-                    &(("@modeRequested"=="resolution" || "@modeRequested"=="gs") ? "<p>&(text(part_qn))</p>" : "");
-                </TEXT>
-                <return value="STATEMENT">
-                </function>
-                ${statementSteps}
-            </def>
-            </function>
+          <!-- ###############################<< Var >>###############################-->
+          
+          <!-- ###############################<< editor >>###############################-->
+          ${staticSourceList}
+          
+          <!-- ###############################<< editor_ans >>###############################-->
+          ${staticSourceAnsList}
+          
+      </def> 
+      </function>
 
-
-            <function name=ResolutionSteps list={}>
-            ${resolutionStepsList}
-            </function>
-
-            <function name=ResolutionModule list={partsRequested}>
-            <def module=".">
-
-                <!-- *************************************** Show Me ***************************************-->
-                <function name=ResolutionModule_Main list={modeRequested}> 
-                ${staticVarsList}
-                <TEXT REF=RESOLUTION>
-                    <p>%EP_text1;</p>
-                </TEXT>
-                <return value="RESOLUTION">
-                </function>
-                ${resolutionSteps}
-            </def>
-            </function>
+      <function name=StatementSteps list={}>
+      ${statementStepsList}
+      </function>
+      ${triesModule}
+      <function name=StatementModule list={}>
+      <def module="."> 
+      
+          <!-- *************************************** Main Question ***************************************-->
+          <function name=StatementModule_Main list={modeRequested}>
+          <TEXT REF=part_qn>
+              <p>&(text(I1_text1));</p>
+          </TEXT>
+          <text ref=debug>
+              <hr>
+              <br>inst generation - &(@item_instance_values;)
+              <br>
+              <hr>
+          </text>
+          <TEXT REF=STATEMENT>
+              %debug;
+              <p>%Qn_text1;</p>
+              &(("@modeRequested"=="resolution" || "@modeRequested"=="gs") ? "<p>&(text(part_qn))</p>" : "");
+          </TEXT>
+          <return value="STATEMENT">
+          </function>
+          ${statementSteps}
+      </def>
+      </function>
 
 
-            <function name=AnsproModule list={}>
-            ${apModuleList}
-            </function>
-        
-            
-            <function name=TeacherModule list={partRequested,mode}>
-            ${extraTeacher}
-            &(teacherAnswerHash=#{};;);${teacherAnswer}
-            <return value=@teacherAnswerHash>
-            </function>
+      <function name=ResolutionSteps list={}>
+      ${resolutionStepsList}
+      </function>
 
-            <function name=HtmlTeacherModule list={partRequested}>
-            <var name=iB value="">
-            <var name=iE value="">
-            <unvar name=teacherAnswerHTML>${teacherHTML}
-            <return value="@teacherAnswerHTML">
-            </function>
+      <function name=ResolutionModule list={partsRequested}>
+      <def module=".">
 
-            <function name=HintModule list={}>
-            <return value=text(Hint_text)>
-            </function>
-            
-        </QUESTION>
-        ${finalAP}
-        </ITEM>
-        `;
+          <!-- *************************************** Show Me ***************************************-->
+          <function name=ResolutionModule_Main list={modeRequested}> 
+          ${staticVarsList}
+          <TEXT REF=RESOLUTION>
+              <p>%EP_text1;</p>
+          </TEXT>
+          <return value="RESOLUTION">
+          </function>
+          ${resolutionSteps}
+      </def>
+      </function>
+
+
+      <function name=AnsproModule list={}>
+      ${apModuleList}
+      </function>
+
+      
+      <function name=TeacherModule list={partRequested,mode}>
+      ${extraTeacher}
+      &(teacherAnswerHash=#{};;);${teacherAnswer}
+      <return value=@teacherAnswerHash>
+      </function>
+
+      <function name=HtmlTeacherModule list={partRequested}>
+      <var name=iB value="">
+      <var name=iE value="">
+      <unvar name=teacherAnswerHTML>${teacherHTML}
+      <return value="@teacherAnswerHTML">
+      </function>
+
+      <function name=HintModule list={}>
+      <return value=text(Hint_text)>
+      </function>
+      
+  </QUESTION>
+  ${finalAP}
+</ITEM>`;
   const editortype = [
     { value: 0, name: "formed" },
     { value: 1, name: "tabed" },

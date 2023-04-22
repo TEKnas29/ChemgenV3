@@ -1,5 +1,7 @@
 <script context="module">
   import CodeMirror from "svelte-codemirror-editor";
+  
+  import { html } from "@codemirror/lang-html";
   import { oneDark } from "@codemirror/theme-one-dark";
   import {  Heading, Hr } from 'flowbite-svelte'
 
@@ -32,7 +34,8 @@
      <Heading tag="h4">ISL:</Heading>
        <CodeMirror 
        bind:value={isl_val} 
-       theme={oneDark}
+       theme={oneDark}      
+       lang={html()}
        styles={{
          "&": {
              color: "white",
@@ -51,7 +54,8 @@
         <Heading tag="h4">ENG:</Heading>
         <CodeMirror 
         bind:value={eng_val} 
-        theme={oneDark}
+        theme={oneDark}   
+        lang={html()}
         lineWrapping 
         styles={{
           "&": {

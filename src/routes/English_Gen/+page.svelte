@@ -7,6 +7,7 @@ struct check list
 -->
 <script>
     import CodeMirror from "svelte-codemirror-editor";
+    import { html } from "@codemirror/lang-html";
     import { oneDark } from "@codemirror/theme-one-dark";  
     import { Label, Input, Textarea, Heading, Hr, P, Mark } from 'flowbite-svelte'
     
@@ -366,6 +367,7 @@ struct check list
         bind:value={eng_val} 
         theme={oneDark}
         lineWrapping
+        lang={html()}
         styles={{
           "&": {
             color: "white",
@@ -384,6 +386,7 @@ struct check list
         <CodeMirror 
         bind:value={isl_val} 
         theme={oneDark}
+        lang={html()}
         lineWrapping
         styles={{
           "&": {
