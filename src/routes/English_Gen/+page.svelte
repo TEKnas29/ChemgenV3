@@ -231,7 +231,7 @@ struct check list
         const bCheck2 = new RegExp("\\)","gm") // ")" check
         const betweenQuotes = new RegExp("\'(.*?)\'",'gm') //values between quotes
         const numChk = new RegExp("(\\b\\d+\\.\\d+\\b)|(\\b\\d+\\b)(°)?","gm") //float and number check 
-        const spChk = new RegExp("(?:(?!\n)\\s+)","gm")
+        const spChk = new RegExp("(?:(?!(\n|\\s\n))\\s+)","gm")
         const italiano = new RegExp("\\b(tert)\\b","gm")
         const sps = new RegExp("\\b(sp[2|3])|(SN2)\\b","gm")
         let chk1 = para.replace(chemReg,(x)=>{
@@ -330,8 +330,10 @@ struct check list
                     break;
                 case 3:
                     const pTag = new RegExp("\n","gm")
+                    const emptypTag = new RegExp("<p></p>","gm")
                     let para1 = para.replace(pTag,"</p>\n<p>")
-                    wrapper = `<!-- *****************Explainantion************* -->\n<text ref=EP_text1><p>${para1}</p></text>`
+                    let para2 = para1.replace(emptypTag,"")
+                    wrapper = `<!-- *****************Explainantion************* -->\n<text ref=EP_text1><p>${para2}</p></text>`
 
                     break;
                     
