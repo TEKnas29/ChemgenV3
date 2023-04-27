@@ -21,20 +21,20 @@
   //checkboxes
   $: intermidiateFunction = intF
     ? `
-        <var name=IntermediateCalculations value="<i>Note</i>: For all intermediate calculations make sure to carry two extra digits when applicable and only round your final answer to the correct number of significant digits.">
-        <function name=show_int_calc_instructions list={mode}>
-            <if cond=("@mode;"=="static")>
-                <var name=return_text value="">
-            <else>
-                <var name=return_text value="@IntermediateCalculations;<br/>">
-            </if>
-            <return value="@test;@return_text;">
-        </function>
+    <var name=IntermediateCalculations value="<i>Note</i>: For all intermediate calculations make sure to carry two extra digits when applicable and only round your final answer to the correct number of significant digits.">
+    <function name=show_int_calc_instructions list={mode}>
+        <if cond=("@mode;"=="static")>
+            <var name=return_text value="">
+        <else>
+            <var name=return_text value="@IntermediateCalculations;<br/>">
+        </if>
+        <return value="@test;@return_text;">
+    </function>
         `
     : "";
   $: intermidiateFunctionValue = intFV
     ? `
-        <function name=extra_digit_intermediate list={num,sigfig,max_extra_digit}>
+      <function name=extra_digit_intermediate list={num,sigfig,max_extra_digit}>
         <var name=max_extra_digit value=((@max_extra_digit;)?@max_extra_digit;:2)>
         
         <var name=count value=0>
@@ -51,7 +51,7 @@
         <var name=hdot_flag cond=(@count;>@max_extra_digit;) value=1>
         <var name=sigfig value=(@sigfig;+@count;-@hdot_flag;)>
         <return value={@num_val;,@sigfig;,@hdot_flag;}>
-        </function>
+      </function>
         `
     : "";
   $: generateNumListFunction = gNum
@@ -71,11 +71,11 @@
     : "";
   $: stikeMathFunction = strikeM
     ? `
-        <!-- strike function -->
-        <!-- val1: Number or unit -->
-        <!-- mt_ap: 0 or "" for math font, other number for Anspro -->
-        <!-- mode: create variable in trunck module with any value and in TA/SM with 0 -->
-        <function name=strike_function list={val1,mt_ap,mode,sp}>
+      <!-- strike function -->
+      <!-- val1: Number or unit -->
+      <!-- mt_ap: 0 or "" for math font, other number for Anspro -->
+      <!-- mode: create variable in trunck module with any value and in TA/SM with 0 -->
+      <function name=strike_function list={val1,mt_ap,mode,sp}>
         <var name=space_val value=(@sp;==1?"&sp;":"")>
         <if cond=(!@mt_ap; && !@mode;)>
             <return value="@space_val;<font color=@userf.red;><strike><font color=@userf.black;>@val1;</font></strike></font>">  	
@@ -84,7 +84,7 @@
         <else>
             <return value="@val1;">
         </if>
-        </function>
+      </function>
         `
     : "";
 
@@ -120,10 +120,11 @@
         }
       }
       if (stepArr.length > 0) {
-        tries = `
-                <function name=StatementStepsTries list={}>
-                    <return value=#{${stepArr.join(",")}}>
-                </function>`;
+      tries = `
+      <function name=StatementStepsTries list={}>
+        <return value=#{${stepArr.join(",")}}>
+      </function>
+      `
       }
     }
     return tries;
@@ -150,101 +151,130 @@
       if (s.editortype >= 0 && s.editortype !== "") {
         const stepName = (mode === 1 ? "I" : "GS") + s.id;
         const feedbacktext =
-          mode === 1 ? `,\n\t\t\t\t\t\t\t\tfeedbacks:#{},` : ``;
+          mode === 1 ? `feedbacks:#{}` : ``;
         const refVal = mode === 1 ? "INTERACTION" : "SOLUTION";
-        const reference = `<TEXT REF=${refVal}>
-                                        <p>%${stepName}_text1;</p>
-                                        @iB;${
-                                          editortype[s.editortype]["name"]
-                                        }_editor_${stepName};@iE;
-                                    </TEXT>
-                                    <return value="${refVal}">`;
+        const reference = `
+              <TEXT REF=${refVal}>
+                  <p>%${stepName}_text1;</p>
+                  @iB;${
+                    editortype[s.editortype]["name"]
+                  }_editor_${stepName};@iE;
+              </TEXT>
+              <return value="${refVal}">`;
         switch (s.editortype) {
           case 0:
-            editor += `<!-- ***************************************${stepName}*************************************** --> 
-                            <function name=StatementModule_${stepName} list={modeRequested}>
-                                <var name=formed_editor_${stepName} value=@.toolLayout.createTool('formed','formed_${stepName}','editor',#{
-                                    recall:text()${feedbacktext}
-                                });>
-                                ${reference}       
-                            </function>\n`;
+            editor += `
+          <!-- ***************************************${stepName}*************************************** --> 
+            <function name=StatementModule_${stepName} list={modeRequested}>
+                <var name=formed_editor_${stepName} value=@.toolLayout.createTool('formed','formed_${stepName}','editor',#{
+                    recall:text(),
+                    ${feedbacktext}
+                });>
+                ${reference}       
+            </function>
+            `;
             break;
           case 1:
             const mediaList = mediaListGen(s.eb, s.ddm);
-            editor += `<var name=tabed_editor_${stepName} value=@.toolLayout.createTool('tabed','tabed_${stepName}','editor',#{
-                                        recall:text(),features: #{display: #{border: "none"}},${feedbacktext}
-                                        mediaList:{${mediaList}}
-                                    });>
-                                ${reference}`;
+            editor += `
+          <!-- ***************************************${stepName}*************************************** --> 
+            <function name=StatementModule_${stepName} list={modeRequested}>
+              <var name=tabed_editor_${stepName} value=@.toolLayout.createTool('tabed','tabed_${stepName}','editor',#{
+                    recall:text(),features: #{display: #{border: "none"}},${feedbacktext}
+                    mediaList:{${mediaList}}
+                  });>
+                  ${reference}
+          </function>
+          `;
             break;
           case 2:
-            editor += `<var name=moleced_editor_${stepName} value=@.toolLayout.createTool('moleced','moleced_${stepName}','editor',#{
-                                    width: @userfChemistry.moleced_width["small"];,
-                                    height: @userfChemistry.moleced_height["small"];,
-                                    menu: "standard",
-                                    features:#{
-                                        input:#{
-                                            bondType:{"line"}
-                                            }
-                                        }
-                                    });>
-                                    ${reference}`;
+            editor += `
+          <!-- ***************************************${stepName}*************************************** --> 
+            <function name=StatementModule_${stepName} list={modeRequested}>
+              <var name=moleced_editor_${stepName} value=@.toolLayout.createTool('moleced','moleced_${stepName}','editor',#{
+                                  width: @userfChemistry.moleced_width["small"];,
+                                  height: @userfChemistry.moleced_height["small"];,
+                                  menu: "standard",
+                                  features:#{
+                                      input:#{
+                                          bondType:{"line"}
+                                              }
+                                          }
+                                      });>
+                                  ${reference}
+              </function>
+              `;
             break;
           case 3:
-            editor += `<var name=moleced_editor_${stepName} value=@.toolLayout.createTool("moleced_manager","moleced_${stepName}","editor",#{
-                                    editorMode:"mechanism",
-                                    menu:"mechanism",
-                                    recall:"@moleced_recall_${stepName};",
-                                    extraButtons:{"moleced_plus_arrow"},
-                                    features:#{
-                                        input:#{bondType:{"line"}},
-                                        display:#{
-                                            autoCenter: true,
-                                            isChangeDefaultSize: true,
-                                            reactantProductWidth: 450,
-                                            reactantProductHeight: 450,
-                                            reactionArrowLength: 100
-                                    }}})> 
-                                    ${reference}`;
+            editor += `
+          <!-- ***************************************${stepName}*************************************** --> 
+            <function name=StatementModule_${stepName} list={modeRequested}>
+              <var name=moleced_editor_${stepName} value=@.toolLayout.createTool("moleced_manager","moleced_${stepName}","editor",#{
+                                      editorMode:"mechanism",
+                                      menu:"mechanism",
+                                      recall:"@moleced_recall_${stepName};",
+                                      extraButtons:{"moleced_plus_arrow"},
+                                      features:#{
+                                          input:#{bondType:{"line"}},
+                                          display:#{
+                                              autoCenter: true,
+                                              isChangeDefaultSize: true,
+                                              reactantProductWidth: 450,
+                                              reactantProductHeight: 450,
+                                              reactionArrowLength: 100
+                                      }}})> 
+                                      ${reference}
+            </function>
+            `;
             break;
           case 4:
-            editor += `<var name=moleced_editor_${stepName} value=@.toolLayout.createTool("moleced_manager","moleced_${stepName}","editor",
-                                    #{
-                                    editorMode:"reaction",
-                                    recall: "@moleced_recall_${stepName};",
-                                    width: @userfChemistry.moleced_width["small"];,
-                                    height: @userfChemistry.moleced_height["small"];,
-                                    menu:"standard",       
-                                    extraButtons: {"moleced_plus_arrow","moleced_copy"},             
-                                    features:#{
-                                        input:#{bondType:{"line"}},
-                                                display:#{         
-                                                    autoCenter: true,                 
-                                                    reactantProductWidth: 500,
-                                                    reactionArrowLength: 100,                
-                                                    isChangeDefaultSize: true
-                                                }
-                                                }
-                                    })>
-                                    ${reference}`;
+            editor += `
+            <!-- ***************************************${stepName}*************************************** --> 
+              <function name=StatementModule_${stepName} list={modeRequested}>
+                <var name=moleced_editor_${stepName} value=@.toolLayout.createTool("moleced_manager","moleced_${stepName}","editor",
+                                        #{
+                                        editorMode:"reaction",
+                                        recall: "@moleced_recall_${stepName};",
+                                        width: @userfChemistry.moleced_width["small"];,
+                                        height: @userfChemistry.moleced_height["small"];,
+                                        menu:"standard",       
+                                        extraButtons: {"moleced_plus_arrow","moleced_copy"},             
+                                        features:#{
+                                            input:#{bondType:{"line"}},
+                                                    display:#{         
+                                                        autoCenter: true,                 
+                                                        reactantProductWidth: 500,
+                                                        reactionArrowLength: 100,                
+                                                        isChangeDefaultSize: true
+                                                    }
+                                                    }
+                                        })>
+                                        ${reference}
+              </function>
+                                  `;
             break;
           case 5:
-            editor += `<var name=moleced_editor_${stepName} value=@.toolLayout.createTool("moleced_manager","moleced_${stepName}","editor",
-                                    #{
-                                    editorMode:"reaction",
-                                    recall: "@moleced_recall_I1;",
-                                    menu:"reaction",
-                                    features:#{
-                                                display:#{
-                                                    autoCenter: true,    
-                                                        reactantProductWidth: 520,
-                                                    reactantProductHeight: 350,
-                                                    reactionArrowLength: 100,
-                                                    isChangeDefaultSize: true
-                                                }
-                                                }
-                                    });>
-                                    ${reference}`;
+            editor += `
+            <!-- ***************************************${stepName}*************************************** --> 
+              <function name=StatementModule_${stepName} list={modeRequested}>
+                <var name=moleced_editor_${stepName} value=@.toolLayout.createTool("moleced_manager","moleced_${stepName}","editor",
+                                        #{
+                                        editorMode:"reaction",
+                                        recall: "@moleced_recall_I1;",
+                                        menu:"reaction",
+                                        features:#{
+                                                    display:#{
+                                                        autoCenter: true,    
+                                                            reactantProductWidth: 520,
+                                                        reactantProductHeight: 350,
+                                                        reactionArrowLength: 100,
+                                                        isChangeDefaultSize: true
+                                                    }
+                                                    }
+                                        });>
+                                        ${reference}
+              </function>
+                                        `;
             break;
 
           default:
@@ -265,14 +295,14 @@
           if (m.editortype === 1) {
             for (let i = 1; i <= m.eb; i++) {
               source += `
-                            <text ref=tabed_source_I${m.id}_${j}><object name=ansed>\\\\editbox;[]</object></text>
+            <text ref=tabed_source_I${m.id}_${j}><object name=ansed>\\\\editbox;[]</object></text>
                             `;
               j += 1;
             }
           } else if (m.editortype === 0) {
             for (let i = 1; i <= m.eb; i++) {
               source += `
-                            <text ref=formed_source_I${m.id}_${j}><object name=ansed returnValue=ans_returned_I${m.id}_${j}>\\\\editbox;[]</object></text>
+            <text ref=formed_source_I${m.id}_${j}><object name=ansed returnValue=ans_returned_I${m.id}_${j}>\\\\editbox;[]</object></text>
                             `;
               j += 1;
             }
@@ -284,18 +314,18 @@
           if (m.editortype === 1) {
             for (let i = 1; i <= m.ddm; i++) {
               source += `
-                            <text ref=tabed_source_I${m.id}_${j}><object name=UIChoice>
-                                    <option value="1"></option>
-                                    <option value="2"></option></object></text>
+            <text ref=tabed_source_I${m.id}_${j}><object name=UIChoice>
+                    <option value="1"></option>
+                    <option value="2"></option></object></text>
                                     `;
               j += 1;
             }
           } else if (m.editortype === 0) {
             for (let i = 1; i <= m.ddm; i++) {
               source += `
-                            <text ref=formed_source_I${m.id}_${j}><object name=UIChoice returnValue=ans_returned_I${m.id}_${j}>
-                                    <option value="1"></option>
-                                    <option value="2"></option></object></text>
+            <text ref=formed_source_I${m.id}_${j}><object name=UIChoice returnValue=ans_returned_I${m.id}_${j}>
+                    <option value="1"></option>
+                    <option value="2"></option></object></text>
                                     `;
               j += 1;
             }
@@ -312,14 +342,14 @@
           if (g.editortype === 1) {
             for (let i = 1; i <= g.eb; i++) {
               source += `
-                            <text ref=tabed_source_GS${g.id}_${j}><object name=ansed>\\\\editbox;[]</object></text>
+            <text ref=tabed_source_GS${g.id}_${j}><object name=ansed>\\\\editbox;[]</object></text>
                             `;
               j += 1;
             }
           } else if (g.editortype === 0) {
             for (let i = 1; i <= g.eb; i++) {
               source += `
-                            <text ref=formed_source_GS${g.id}_${j}><object name=ansed returnValue=ans_returned_GS${g.id}_${j}>\\\\editbox;[]</object></text>
+            <text ref=formed_source_GS${g.id}_${j}><object name=ansed returnValue=ans_returned_GS${g.id}_${j}>\\\\editbox;[]</object></text>
                             `;
               j += 1;
             }
@@ -331,18 +361,18 @@
           if (g.editortype === 1) {
             for (let i = 1; i <= g.ddm; i++) {
               source += `
-                            <text ref=tabed_source_GS${g.id}_${j}><object name=UIChoice>
-                                    <option value="1"></option>
-                                    <option value="2"></option></object></text>
+            <text ref=tabed_source_GS${g.id}_${j}><object name=UIChoice>
+                    <option value="1"></option>
+                    <option value="2"></option></object></text>
                                     `;
               j += 1;
             }
           } else if (g.editortype === 0) {
             for (let i = 1; i <= g.ddm; i++) {
               source += `
-                            <text ref=formed_source_GS${g.id}_${j}><object name=UIChoice returnValue=ans_returned_GS${g.id}_${j}>
-                                    <option value="1"></option>
-                                    <option value="2"></option></object></text>
+            <text ref=formed_source_GS${g.id}_${j}><object name=UIChoice returnValue=ans_returned_GS${g.id}_${j}>
+                    <option value="1"></option>
+                    <option value="2"></option></object></text>
                                     `;
               j += 1;
             }
@@ -450,14 +480,14 @@
           if (m.editortype === 1) {
             for (let i = 1; i <= m.eb; i++) {
               source += `
-                            <text ref=tabed_source_I${m.id}_${j}></text>
+            <text ref=tabed_source_I${m.id}_${j}></text>
                             `;
               j += 1;
             }
           } else if (m.editortype === 0) {
             for (let i = 1; i <= m.eb; i++) {
               source += `
-                            <text ref=formed_source_I${m.id}_${j}></text>
+            <text ref=formed_source_I${m.id}_${j}></text>
                             `;
               j += 1;
             }
@@ -469,14 +499,14 @@
           if (m.editortype === 1) {
             for (let i = 1; i <= m.ddm; i++) {
               source += `
-                            <text ref=tabed_source_I${m.id}_${j}></text>
+            <text ref=tabed_source_I${m.id}_${j}></text>
                                     `;
               j += 1;
             }
           } else if (m.editortype === 0) {
             for (let i = 1; i <= m.ddm; i++) {
               source += `
-                            <text ref=formed_source_I${m.id}_${j}></text>
+            <text ref=formed_source_I${m.id}_${j}></text>
                                     `;
               j += 1;
             }
@@ -493,14 +523,14 @@
           if (g.editortype === 1) {
             for (let i = 1; i <= g.eb; i++) {
               source += `
-                            <text ref=tabed_source_GS${g.id}_${j}></text>
+            <text ref=tabed_source_GS${g.id}_${j}></text>
                             `;
               j += 1;
             }
           } else if (g.editortype === 0) {
             for (let i = 1; i <= g.eb; i++) {
               source += `
-                            <text ref=formed_source_GS${g.id}_${j}></text>
+            <text ref=formed_source_GS${g.id}_${j}></text>
                             `;
               j += 1;
             }
@@ -512,14 +542,14 @@
           if (g.editortype === 1) {
             for (let i = 1; i <= g.ddm; i++) {
               source += `
-                            <text ref=tabed_source_GS${g.id}_${j}></text>
+            <text ref=tabed_source_GS${g.id}_${j}></text>
                                     `;
               j += 1;
             }
           } else if (g.editortype === 0) {
             for (let i = 1; i <= g.ddm; i++) {
               source += `
-                            <text ref=formed_source_GS${g.id}_${j}></text>
+            <text ref=formed_source_GS${g.id}_${j}></text>
                                     `;
               j += 1;
             }
@@ -566,7 +596,7 @@
         }
       }
     }
-    return `<return value=#{${list.join(",")}>`;
+    return `<return value=#{${list.join(",")}}>`;
   }
 
   $: extraTeacher = extraTAcheck(mq, gs);
@@ -574,28 +604,30 @@
     let eta = "";
     for (const m of mq) {
       if (m.editortype === 2 || m.editortype === 4 || m.editortype === 5) {
-        eta += `<var name=answer_list_I${m.id} value=@toolLayout.getAnswerRecallFromAuthoring("@tool_TA_I${m.id};", "@item_name;")>
-                        <var name=recall_hash_I${m.id} value=#{
-                            "answers":{"@answer_list_I${m.id};"},
-                            "tests":{
-                            #{"name":"structureType", "structure": {"skeleton"}},
-                            #{"name": "reversibleGroups", "tolerance": 10}
-                            }
-                        }>
-                        <var name=fin_recall_hash_I${m.id} value="@userf.stringifyJSJSON(@recall_hash_I${m.id};);">`;
+        eta += `
+        <var name=answer_list_I${m.id} value=@toolLayout.getAnswerRecallFromAuthoring("@tool_TA_I${m.id};", "@item_name;")>
+        <var name=recall_hash_I${m.id} value=#{
+            "answers":{"@answer_list_I${m.id};"},
+            "tests":{
+            #{"name":"structureType", "structure": {"skeleton"}},
+            #{"name": "reversibleGroups", "tolerance": 10}
+            }
+        }>
+        <var name=fin_recall_hash_I${m.id} value="@userf.stringifyJSJSON(@recall_hash_I${m.id};);">`;
       }
     }
     for (const g of gs) {
       if (g.editortype === 2 || g.editortype === 4 || g.editortype === 5) {
-        eta += `<var name=answer_list_GS${g.id} value=@toolLayout.getAnswerRecallFromAuthoring("@tool_TA_GS${g.id};", "@item_name;")>
-                        <var name=recall_hash_GS${g.id} value=#{
-                            "answers":{"@answer_list_GS${g.id};"},
-                            "tests":{
-                            #{"name":"structureType", "structure": {"skeleton"}},
-                            #{"name": "reversibleGroups", "tolerance": 10}
-                            }
-                        }>
-                        <var name=fin_recall_hash_GS${g.id} value="@userf.stringifyJSJSON(@recall_hash_GS${g.id};);">`;
+        eta += `
+        <var name=answer_list_GS${g.id} value=@toolLayout.getAnswerRecallFromAuthoring("@tool_TA_GS${g.id};", "@item_name;")>
+        <var name=recall_hash_GS${g.id} value=#{
+            "answers":{"@answer_list_GS${g.id};"},
+            "tests":{
+            #{"name":"structureType", "structure": {"skeleton"}},
+            #{"name": "reversibleGroups", "tolerance": 10}
+            }
+        }>
+        <var name=fin_recall_hash_GS${g.id} value="@userf.stringifyJSJSON(@recall_hash_GS${g.id};);">`;
       }
     }
     return eta;
@@ -608,32 +640,38 @@
       if (m.editortype >= 0 && m.editortype !== "") {
         switch (m.editortype) {
           case 0:
-            if (m.eb) {
+            if ( m.eb != 0) {
+              console.log(typeof m.eb);
               TA += `
-                                <if cond=("@mode;" == "server_if")>
-                                    <var name=teacherAnswerHash["formed_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value=#{ans_returned_I${m.id}_1:"\\\\editbox;[]"}>
-                                <else>
-                                    <var name=teacherAnswerHash["formed_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value="&(text(ans_I${m.id}));">
-                                </if>`;
+        <if cond=("@mode;" == "server_if")>
+            <var name=teacherAnswerHash["formed_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value=#{ans_returned_I${m.id}_1:"\\\\editbox;[]"}>
+        <else>
+            <var name=teacherAnswerHash["formed_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value="&(text(ans_I${m.id}));">
+        </if>`;
             } else {
               TA += `
-                                <var name=teacherAnswerHash["formed_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value="&(text(ans_I${m.id}));">`;
+        <var name=teacherAnswerHash["formed_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value="&(text(ans_I${m.id}));">`;
             }
             break;
           case 1:
-            TA += `\n<var name=teacherAnswerHash["tabed_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value="&(text(ans_I${m.id}));">`;
+            TA += `
+        <var name=teacherAnswerHash["tabed_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value="&(text(ans_I${m.id}));">`;
             break;
           case 2:
-            TA += `\n<var name=teacherAnswerHash["moleced_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value=("@mode" == "solve" ? "@answer_list_I${m.id};" : "@fin_recall_hash_I${m.id};")>`;
+            TA += `
+        <var name=teacherAnswerHash["moleced_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value=("@mode" == "solve" ? "@answer_list_I${m.id};" : "@fin_recall_hash_I${m.id};")>`;
             break;
           case 3:
-            TA += `\n<var name=teacherAnswerHash["moleced_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value=("@mode" == "solve" ? "@answer_list_I${m.id};" : "@fin_recall_hash_I${m.id};")>`;
+            TA += `
+        <var name=teacherAnswerHash["moleced_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value=("@mode" == "solve" ? "@answer_list_I${m.id};" : "@fin_recall_hash_I${m.id};")>`;
             break;
           case 4:
-            TA += `\n<var name=teacherAnswerHash["moleced_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value="@answer_list_I${m.id};">`;
+            TA += `
+        <var name=teacherAnswerHash["moleced_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value="@answer_list_I${m.id};">`;
             break;
           case 5:
-            TA += `\n<var name=teacherAnswerHash["moleced_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value=("@mode" == "solve" ? "@answer_list_I${m.id};" : "@fin_recall_hash_I${m.id};")>`;
+            TA += `
+        <var name=teacherAnswerHash["moleced_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value=("@mode" == "solve" ? "@answer_list_I${m.id};" : "@fin_recall_hash_I${m.id};")>`;
             break;
 
           default:
@@ -645,22 +683,28 @@
       if (g.editortype >= 0 && g.editortype !== "") {
         switch (g.editortype) {
           case 0:
-            TA += `\n<var name=teacherAnswerHash["formed_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value="&(text(ans_GS${g.id}));">`;
+            TA += `
+        <var name=teacherAnswerHash["formed_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value="&(text(ans_GS${g.id}));">`;
             break;
           case 1:
-            TA += `\n<var name=teacherAnswerHash["tabed_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value="&(text(ans_GS${g.id}));">`;
+            TA += `
+        <var name=teacherAnswerHash["tabed_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value="&(text(ans_GS${g.id}));">`;
             break;
           case 2:
-            TA += `\n<var name=teacherAnswerHash["moleced_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value=("@mode" == "solve" ? "@answer_list_GS${g.id};" : "@fin_recall_hash_GS${g.id};")>`;
+            TA += `
+        <var name=teacherAnswerHash["moleced_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value=("@mode" == "solve" ? "@answer_list_GS${g.id};" : "@fin_recall_hash_GS${g.id};")>`;
             break;
           case 3:
-            TA += `\n<var name=teacherAnswerHash["moleced_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value=("@mode" == "solve" ? "@answer_list_GS${g.id};" : "@fin_recall_hash_GS${g.id};")>`;
+            TA += `
+        <var name=teacherAnswerHash["moleced_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value=("@mode" == "solve" ? "@answer_list_GS${g.id};" : "@fin_recall_hash_GS${g.id};")>`;
             break;
           case 4:
-            TA += `\n<var name=teacherAnswerHash["moleced_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value="@answer_list_GS${g.id};">`;
+            TA += `
+        <var name=teacherAnswerHash["moleced_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value="@answer_list_GS${g.id};">`;
             break;
           case 5:
-            TA += `\n<var name=teacherAnswerHash["moleced_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value=("@mode" == "solve" ? "@answer_list_GS${g.id};" : "@fin_recall_hash_GS${g.id};")>`;
+            TA += `
+        <var name=teacherAnswerHash["moleced_GS${g.id}"] cond=("@partRequested;" == "GS${g.id}") value=("@mode" == "solve" ? "@answer_list_GS${g.id};" : "@fin_recall_hash_GS${g.id};")>`;
             break;
 
           default:
@@ -676,7 +720,7 @@
     let TH = "";
     for (const m of mq) {
       if (m.editortype !== '') {
-        if (m.editortype >= 1) {
+        if (m.editortype >= 2) {
           TH += `
           <if cond=("@partRequested;" == "I${m.id}")>
             <var name=moleced_display_I${m.id}_TA value=@toolLayout.createAuthoringTool("moleced_disp_TA_I${m.id}","@tool_TA_I${m.id};","@item_name;");>
@@ -701,7 +745,7 @@
     }
     for (const g of gs) {
       if (g.editortype !== '') {        
-        if (g.editortype >= 1) {
+        if (g.editortype >= 2) {
           TH += `
           <if cond=("@partRequested;" == "GS${g.id}")>
             <var name=moleced_display_GS${g.id}_TA value=@toolLayout.createAuthoringTool("moleced_disp_TA_GS${g.id}","@tool_TA_GS${g.id};","@item_name;");>
@@ -736,47 +780,54 @@
       const apComment = `<!-- *************************************** Answer processing of I${m.id} *************************************** -->`;
       //tabed
       if (m.editortype === 1) {
-        splitval +=`&(@multiFeedback.splitAnswer3("student_answer","@userf.removeSet1("@studentAnswer;");"));
-                    &(@multiFeedback.splitAnswer3("teacher_answer","@userf.removeSet1("@teacherAnswer;");"));`;
+        splitval +=`
+              &(@multiFeedback.splitAnswer3("student_answer","@userf.removeSet1("@studentAnswer;");"));
+              &(@multiFeedback.splitAnswer3("teacher_answer","@userf.removeSet1("@teacherAnswer;");"));`;
         let i = 1;
         for (i = 1; i <= m.eb; i++) {
           let feedbackStatement = ``;
           if (m.eb + m.ddm > 1) {
             if (i < 10) {
-              feedbackStatement =`\n&(@itemAnspro.storeFeedback("I${m.id}.0${i}"))
-                                    &(@itemAnspro.registerFeedback("I${m.id}.0${i}"))`;
+              feedbackStatement =`
+              &(@itemAnspro.storeFeedback("I${m.id}.0${i}"))
+              &(@itemAnspro.registerFeedback("I${m.id}.0${i}"))`;
             } else {
-              feedbackStatement = `\n&(@itemAnspro.storeFeedback("I${m.id}.${i}"))
-                                    &(@itemAnspro.registerFeedback("I${m.id}.${i}"))`;
+              feedbackStatement = `
+              &(@itemAnspro.storeFeedback("I${m.id}.${i}"))
+              &(@itemAnspro.registerFeedback("I${m.id}.${i}"))`;
             }
           }
-          generalRule += `\n<evaluation rule=arith2 student="@student_answer${i};" teacher="@teacher_answer${i};">
-                                <feedback>
-                                    <catch name=value.*>
-                                    <catch name=type.*>
-                                    <catch name=reduce.*>
-                                    <catch name=convention.*>
-                                &(@userFeedback.fracSimplifyDivByOne(););
-                                </feedback>${feedbackStatement}`;
+          generalRule += `
+          <evaluation rule=arith2 student="@student_answer${i};" teacher="@teacher_answer${i};">
+            <feedback>
+                <catch name=value.*>
+                <catch name=type.*>
+                <catch name=reduce.*>
+                <catch name=convention.*>
+            &(@userFeedback.fracSimplifyDivByOne(););
+            </feedback>${feedbackStatement}`;
         }
 
         for (i = m.eb + 1; i <= m.eb + m.ddm; i++) {
           let feedbackStatement = ``;
           if (m.eb + m.ddm > 1) {
             if (i < 10) {
-              feedbackStatement = `\n&(@itemAnspro.storeFeedback("I${m.id}.0${i}"))
-                                    &(@itemAnspro.registerFeedback("I${m.id}.0${i}"))`;
+              feedbackStatement = `
+              &(@itemAnspro.storeFeedback("I${m.id}.0${i}"))
+              &(@itemAnspro.registerFeedback("I${m.id}.0${i}"))`;
             } else {
-              feedbackStatement = `\n&(@itemAnspro.storeFeedback("I${m.id}.${i}"))
-                                    &(@itemAnspro.registerFeedback("I${m.id}.${i}"))`;
+              feedbackStatement = `
+              &(@itemAnspro.storeFeedback("I${m.id}.${i}"))
+              &(@itemAnspro.registerFeedback("I${m.id}.${i}"))`;
             }
           }
-          generalRule += `\n\t<evaluation rule=choice student="@('.student_ans_returned_I${m.id}_${i}');" teacher="@('.teacher_ans_returned_I${m.id}_${i}');">
-                                    <feedback></feedback>${feedbackStatement}`;
+          generalRule += `
+            <evaluation rule=choice student="@('.student_ans_returned_I${m.id}_${i}');" teacher="@('.teacher_ans_returned_I${m.id}_${i}');">
+               <feedback></feedback>${feedbackStatement}`;
         }
       }
-      //formed, tabed
-      if (m.editortype <= 1) {
+      //formed
+      if (m.editortype == 0) {
         if (m.eb) {
           splitval += `
                     &(@multiFeedback.splitAnswerEditBox("student_answer","@studentAnswer;"));
@@ -825,7 +876,7 @@
             }
           }
           generalRule += `
-                        <evaluation rule=choice student="@('.student_ans_returned_I${m.id}_${i}');" teacher="@('.teacher_ans_returned_I${m.id}_${i}');">
+                        test<evaluation rule=choice student="@('.student_ans_returned_I${m.id}_${i}');" teacher="@('.teacher_ans_returned_I${m.id}_${i}');">
                         <feedback></feedback>${feedbackStatement}`;
         }
       } else {
@@ -864,11 +915,12 @@
         }
       }
       if (m.editortype !== '') {   
-          AP += `${apComment}
-                              <function name=anspro_${editortype[m.editortype]['name']}_I${m.id} list={studentAnswer,teacherAnswer}>
-                          ${splitval}
-                          ${generalRule}
-                              </function>
+          AP += `
+          ${apComment}
+            <function name=anspro_${editortype[m.editortype]['name']}_I${m.id} list={studentAnswer,teacherAnswer}>
+                    ${splitval}
+                    ${generalRule}
+            </function>
                               `;
       } else {
         AP += ''
@@ -1014,11 +1066,12 @@
       }
       
       if (g.editortype !== '') {     
-          AP += `${apComment}
-                <function name=anspro_${editortype[g.editortype]["name"]}_GS${g.id} list={studentAnswer,teacherAnswer}>
-            ${splitval}
-            ${generalRule}
-                </function>
+          AP += `
+          ${apComment}
+            <function name=anspro_${editortype[g.editortype]["name"]}_GS${g.id} list={studentAnswer,teacherAnswer}>
+              ${splitval}
+              ${generalRule}
+            </function>
                 `;
       } else {
         AP += ''
@@ -1081,7 +1134,7 @@
       </function>
 
       <function name=StatementSteps list={}>
-      ${statementStepsList}
+        ${statementStepsList}
       </function>
       ${triesModule}
       <function name=StatementModule list={}>
@@ -1111,7 +1164,7 @@
 
 
       <function name=ResolutionSteps list={}>
-      ${resolutionStepsList}
+        ${resolutionStepsList}
       </function>
 
       <function name=ResolutionModule list={partsRequested}>
@@ -1137,15 +1190,17 @@
       
       <function name=TeacherModule list={partRequested,mode}>
       ${extraTeacher}
-      &(teacherAnswerHash=#{};;);${teacherAnswer}
-      <return value=@teacherAnswerHash>
+        &(teacherAnswerHash=#{};;);
+        ${teacherAnswer}
+        <return value=@teacherAnswerHash>
       </function>
 
       <function name=HtmlTeacherModule list={partRequested}>
-      <var name=iB value="">
-      <var name=iE value="">
-      <unvar name=teacherAnswerHTML>${teacherHTML}
-      <return value="@teacherAnswerHTML">
+        <var name=iB value="">
+        <var name=iE value="">
+        <unvar name=teacherAnswerHTML>
+        ${teacherHTML}
+        <return value="@teacherAnswerHTML">
       </function>
 
       <function name=HintModule list={}>
@@ -1206,7 +1261,7 @@
     mq = [...mq, { id: ++mq.length, editortype: "", try: 3, eb: 0, ddm: 0, tx:'' }];
   }
   function addG() {
-    gs = [...gs, { id: ++gs.length, editortype: "", try: 3, eb: 0, ddm: 0, tx:'' }];
+    gs = [...gs, { id: ++gs.length, editortype: "", eb: 0, ddm: 0, tx:'' }];
   }
   // function removeQ(id) {
   //     mq = mq.filter(item => item.id !== id)
@@ -1337,10 +1392,6 @@
           />
         </Label>
         {#if g.editortype <= 1 && g.editortype !== ""}
-          <Label class="border-t"
-            >Tries:
-            <Input type="number" min="0" bind:value={g.try} />
-          </Label>
           <Label class="border-t"
             >Editbox:
             <Input type="number" min="0" bind:value={g.eb} />
