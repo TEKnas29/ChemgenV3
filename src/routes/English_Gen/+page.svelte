@@ -4,6 +4,7 @@ SN2 support
 +/- support may be possible 
 Bonds support not possible no idea 
 struct check list
+Units
 -->
 <script>
     import CodeMirror from "svelte-codemirror-editor";
@@ -142,13 +143,13 @@ struct check list
         if (chk8 = chk6.match(sps)) {
             for(const x of chk8){
                 let x2 = x.split('').filter(v => /\d/.test(v))
-                chk7 += `\n<var name=${x} value=<math>sp<sup>${x2}</sup></math>`
+                chk7 += `\n<var name=${x} value="<math>sp<sup>${x2}</sup></math>">`
             }
             
         }
         let chk9
         if (chk9 = chk6.match(sn)) {
-                chk7 += `\n<var name=sn2 value=<math><font face=text>S<sub>N</sub>2</font></math>`   
+                chk7 += `\n<var name=sn2 value="<math><font face=text>S<sub>N</sub>2</font></math>">`   
         }
     
         const finalOp = chk7.split("\n")
