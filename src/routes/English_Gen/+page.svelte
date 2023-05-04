@@ -265,8 +265,8 @@ Units
                         .replace(sps,(i)=>{
                                 return `@${i.toLowerCase()};`
                             })
-                        .replace("{","(")
-                        .replace("}",")")
+                        .replace("/\{/gm","(")
+                        .replace("/\}/gm",")")
         let chk8 = symbolCheck(chk7)
 
         let floatArr = []
