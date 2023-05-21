@@ -1,6 +1,7 @@
 <script>
   import {
     Input,
+    NumberInput,
     Button,
     ButtonGroup,
     Checkbox,
@@ -95,7 +96,7 @@
     let noOfSteps = "";
     let m = mode === 1 ? "I" : "GS";
 
-    if (m !== "" && arr !== []) {
+    if (m !== "" && arr) {
       for (let i = 1; i <= arr.length; i++) {
         if (i === 1) {
           noOfSteps += m + i;
@@ -641,7 +642,6 @@
         switch (m.editortype) {
           case 0:
             if ( m.eb != 0) {
-              console.log(typeof m.eb);
               TA += `
         <if cond=("@mode;" == "server_if")>
             <var name=teacherAnswerHash["formed_I${m.id}"] cond=("@partRequested;" == "I${m.id}") value=#{ans_returned_I${m.id}_1:"\\\\editbox;[]"}>
@@ -1345,15 +1345,15 @@
         {#if m.editortype <= 1 && m.editortype !== ""}
           <Label class="border-t"
             >Tries:
-            <Input type="number" min="0" bind:value={m.try} />
+            <NumberInput type="number" min="0" bind:value={m.try} />
           </Label>
           <Label class="border-t"
             >Editbox:
-            <Input type="number" min="0" bind:value={m.eb} />
+            <NumberInput type="number" min="0" bind:value={m.eb} />
           </Label>
           <Label class="border-t"
             >DDM:
-            <Input
+            <NumberInput
               type="number"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-auto p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 min=0"
               min="0"
@@ -1395,11 +1395,11 @@
         {#if g.editortype <= 1 && g.editortype !== ""}
           <Label class="border-t"
             >Editbox:
-            <Input type="number" min="0" bind:value={g.eb} />
+            <NumberInput type="number" min="0" bind:value={g.eb} />
           </Label>
           <Label class="border-t"
             >DDM:
-            <Input
+            <NumberInput
               type="number"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-auto p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               min="0"
