@@ -19,7 +19,7 @@
   let intFV = false;
   let gNum = false;
   let strikeM = false;
-  //checkboxes
+//checkboxes
   $: intermidiateFunction = intF
     ? `
     <var name=IntermediateCalculations value="<i>Note</i>: For all intermediate calculations make sure to carry two extra digits when applicable and only round your final answer to the correct number of significant digits.">
@@ -89,7 +89,8 @@
         `
     : "";
 
-  // Steps count Generator
+
+// Steps count Generator
   $: statementStepsList = Steps(mq, 1);
   $: resolutionStepsList = Steps(gs, 2);
   function Steps(arr = [], mode = 0) {
@@ -108,7 +109,7 @@
     }
     return ``;
   }
-  //Tries
+//Tries
   $: triesModule = triesCalc(mq);
   function triesCalc(mq) {
     let tries = "";
@@ -130,7 +131,7 @@
     }
     return tries;
   }
-  // I1/GS1 editor Generator
+// I1/GS1 editor Generator
   $: statementSteps = getSteps(mq, 1);
   $: resolutionSteps = getSteps(gs, 2);
   function mediaListGen(editbox, ddm) {
