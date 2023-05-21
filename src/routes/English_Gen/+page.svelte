@@ -6,6 +6,7 @@ Bonds support not possible no idea
 struct check list
 Units
 -->
+
 <script>
     import CodeMirror from "svelte-codemirror-editor";
     import { html } from "@codemirror/lang-html";
@@ -265,8 +266,8 @@ Units
                         .replace(sps,(i)=>{
                                 return `@${i.toLowerCase()};`
                             })
-                        .replace("/\{/gm","(")
-                        .replace("/\}/gm",")")
+                        .replace(/\{/gm,"(")
+                        .replace(/\}/gm,")")
         let chk8 = symbolCheck(chk7)
 
         let floatArr = []
