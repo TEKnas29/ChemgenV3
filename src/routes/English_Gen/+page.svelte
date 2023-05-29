@@ -13,7 +13,7 @@ Units
     import { oneDark } from "@codemirror/theme-one-dark";  
     import { Label, Input, Textarea, Heading, Hr, P, Mark } from 'flowbite-svelte'
     
-    const BlackList = new  RegExp("\'(NMR|SN2|So|E2|In|A|IR)\'","gm")  // Blacklist for words looklike chem formula
+    const BlackList = new  RegExp("\'(NMR|SN2|So|E2|In|A|IR|To)\'","gm")  // Blacklist for words looklike chem formula
     const chemReg = new RegExp("[A-Z][a-z]?\\d*|\\([^()]*(?:\\(.*\\))?[^()]*\\)\\d+", 'gm') // https://stackoverflow.com/questions/23602175/regex-for-parsing-chemical-formulas
 
     let Qn=''
@@ -234,7 +234,7 @@ Units
         const betweenQuotes = new RegExp("\'(.*?)\'",'gm') //values between quotes
         const numChk = new RegExp("(\\b\\d+\\.\\d+\\b)|(\\b\\d+\\b)(°)?","gm") //float and number check 
         const spChk = new RegExp("(?:(?!(\n|\\s\n))\\s+)","gm")
-        const italiano = new RegExp("\\b(tert)\\b","gm")
+        const italiano = new RegExp("\\b(tert|cis|trans)\\b","gm")
         const sps = new RegExp("\\b(sp[2|3])|(SN2)\\b","gm")
         let chk1 = para.replace(chemReg,(x)=>{
             return `'${x}'`
