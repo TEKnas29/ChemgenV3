@@ -13,7 +13,7 @@ Units
     import { oneDark } from "@codemirror/theme-one-dark";  
     import { Label, Input, Textarea, Heading, Hr, P, Mark } from 'flowbite-svelte'
     
-    const BlackList = new  RegExp("\'(NMR|SN2|So|E2|In|A|IR|To)\'","gm")  // Blacklist for words looklike chem formula
+    const BlackList = new  RegExp("\'(NMR|SN2|So|E2|In|A|IR|To|IUPAC)\'","gm")  // Blacklist for words looklike chem formula
     const chemReg = new RegExp("[A-Z][a-z]?\\d*|\\([^()]*(?:\\(.*\\))?[^()]*\\)\\d+", 'gm') // https://stackoverflow.com/questions/23602175/regex-for-parsing-chemical-formulas
 
     let Qn=''
