@@ -13,7 +13,7 @@ Units
     import { oneDark } from "@codemirror/theme-one-dark";  
     import { Label, Input, Textarea, Heading, Hr, P, Mark } from 'flowbite-svelte'
     
-    const BlackList = new  RegExp("\'(NMR|SN2|So|E2|In|A|IR|To|IUPAC|By)\'","gm")  // Blacklist for words looklike chem formula
+    const BlackList = new  RegExp("\'(NMR|SN2|So|E2|In|A|IR|To|IUPAC|By|DDM)\'","gm")  // Blacklist for words looklike chem formula
     const chemReg = new RegExp("[A-Z][a-z]?\\d*|\\([^()]*(?:\\(.*\\))?[^()]*\\)\\d+", 'gm') // https://stackoverflow.com/questions/23602175/regex-for-parsing-chemical-formulas
 
     let Qn=''
@@ -87,7 +87,11 @@ Units
         const betweenQuotes = new RegExp("\'(.*?)\'",'gm') //values between quotes
         const sps = new RegExp("\\b(sp[2|3])\\b","gm")
         const sn = new RegExp("\\b(SN2)\\b","gm")
-
+        const Bond1 = new RegExp("(\'?-\'?)","gm")
+        const Bond2 = new RegExp("(\'=\')","gm")
+        const Bond3 = new RegExp("(\'?(☰|≡)\'?)","gm")
+        const All_bonds_with_rightquote = new RegExp("(-\')|(=\')|(☰\')|(≡\')","gm")
+        const All_bonds_with_leftquote = new RegExp("(\'-)|(\''=)|(\'☰)|(\'≡)","gm")
         let chk1 = para.replace(chemReg,(x)=>{
             return `'${x}'`
         })
@@ -96,7 +100,7 @@ Units
         })
         let chk3 = chk2.replace(qCheck,"")
         let chk4 = chk3.replace(BlackList,function (s) {
-        let nreg = new RegExp("\'","g")
+        let nreg = new RegExp("\'","gm")
         let  z = s.replace(nreg,'')
         return `${z}`
         })
@@ -105,40 +109,81 @@ Units
         let chk6 = chk5.replace(bCheck2,"\}")
         let chk7_temp;
         let chk7 = '';
-        if (chk7_temp = chk6.match(betweenQuotes)){
-            for(const x of chk7_temp){
-                const nreg = new RegExp('\'','gm')
-                const nreg1 = new RegExp("(\\{|\\})","g")
-                const nreg2 = new RegExp('\\d+','gm')
-                const nreg3 = new RegExp('\,\,','gm')
-                const nreg4 = new RegExp("1\,\,","g")
-                const nreg5 = new RegExp("\{","g")
-                const nreg6 = new RegExp("^\{","g")
-                const nreg7 = new RegExp("\,$","g")
-                const nreg8 = new RegExp("\,\}","g")
-
-                let x1 = x
-                .replace(nreg1,'_')
-                .replace(nreg3,'').replace(nreg,'')
-                
-                let x2 = x.replace(nreg,"")
-                          .replace(nreg2,(p)=>{
-                                let q = p.replace(nreg,'')
-                                return `,${q},`
-                            })
-                            .replace(nreg,'')
-                            .replace(nreg3,'\,')
-                            .replace(chemReg,function (p) {        
-                                return `${p},1,`
-                            })
-                            .replace(nreg4,'')
-                            .replace(nreg5,'\{')
-                            .replace(nreg6,'1,\{')
-                            .replace(nreg7,'')
-                            .replace(nreg8,'\}')
-                chk7 += `\n<var name=chem_${x1} value=@userfChemistry.formatChemEquation({{${x2}}},1)>`
-                }
-                
+        if (chk6.match(Bond1) || chk6.match(Bond2) || chk6.match(Bond3)) {
+            let nreg = new RegExp("\'","gm")
+            let chk6_bonded = chk6.replace(Bond1,"-") 
+                                .replace(Bond2,"=") 
+                                .replace(Bond3,"☰") 
+                                .replace(All_bonds_with_rightquote,(p)=>{
+                                    let q = p.replace(nreg,'')
+                                    return `\'${q}`
+                                })
+                                .replace(All_bonds_with_leftquote,(p)=>{
+                                    let q = p.replace(nreg,'')
+                                    return `${q}\'`
+                                })
+            if (chk7_temp = chk6_bonded.match(betweenQuotes)){
+                for(const x of chk7_temp){
+                    const nreg1 = new RegExp("(\\{|\\})","g")
+                    const nreg2 = new RegExp('\\d+','gm')
+                    const nreg_bond1 = new RegExp("(-)","gm")
+                    const nreg_bond2 = new RegExp("(=)","gm")
+                    const nreg_bond3 = new RegExp("(☰|≡)","gm")
+    
+                    let x1 = x
+                    .replace(nreg1,'_')
+                    .replace(nreg,'')
+                    .replace(nreg_bond1,"1")
+                    .replace(nreg_bond2,"2")
+                    .replace(nreg_bond3,"3")
+                    
+                    let x2 = x.replace(nreg,"")
+                              .replace(nreg_bond1,"@userfChemistry.singlebond();")
+                              .replace(nreg_bond2,"@userfChemistry.doublebond();")
+                              .replace(nreg_bond3,"@userfChemistry.triplebond();")
+                              .replace(nreg2,(p)=>{
+                                    let q = p.replace(nreg,'')
+                                    return `<sub>${q}</sub>`
+                                })
+                                .replace(nreg,'')
+                    chk7 += `\n<var name=chem_${x1} value="<math><font face=chemsymb>${x2}</font></math>">`
+                    }
+                    
+            }
+        } else {
+            if (chk7_temp = chk6.match(betweenQuotes)){
+                for(const x of chk7_temp){
+                    const nreg = new RegExp('\'','gm')
+                    const nreg1 = new RegExp("(\\{|\\})","g")
+                    const nreg2 = new RegExp('\\d+','gm')
+                    const nreg3 = new RegExp('\,\,','gm')
+                    const nreg4 = new RegExp("1\,\,","g")
+                    const nreg6 = new RegExp("^\{","g")
+                    const nreg7 = new RegExp("\,$","g")
+                    const nreg8 = new RegExp("\,\}","g")
+    
+                    let x1 = x
+                    .replace(nreg1,'_')
+                    .replace(nreg3,'').replace(nreg,'')
+                    
+                    let x2 = x.replace(nreg,"")
+                              .replace(nreg2,(p)=>{
+                                    let q = p.replace(nreg,'')
+                                    return `,${q},`
+                                })
+                                .replace(nreg,'')
+                                .replace(nreg3,'\,')
+                                .replace(chemReg,function (p) {        
+                                    return `${p},1,`
+                                })
+                                .replace(nreg4,'')
+                                .replace(nreg6,'1,\{')
+                                .replace(nreg7,'')
+                                .replace(nreg8,'\}')
+                    chk7 += `\n<var name=chem_${x1} value=@userfChemistry.formatChemEquation({{${x2}}},1)>`
+                    }
+                    
+            }
         }
         let chk8
         if (chk8 = chk6.match(sps)) {
@@ -236,6 +281,11 @@ Units
         const spChk = new RegExp("(?:(?!(\n|\\s\n))\\s+)","gm")
         const italiano = new RegExp("\\b(tert|cis|trans)\\b","gm")
         const sps = new RegExp("\\b(sp[2|3])|(SN2)\\b","gm")
+        const Bond1 = new RegExp("\'(-)\'","gm")
+        const Bond2 = new RegExp("\'(=)\'","gm")
+        const Bond3 = new RegExp("\'(☰|≡)\'","gm")
+        const All_bonds_with_rightquote = new RegExp("(-\')|(=\')|(☰\')|(≡\')","gm")
+        const All_bonds_with_leftquote = new RegExp("(\'-)|(\''=)|(\'☰)|(\'≡)","gm")
         let chk1 = para.replace(chemReg,(x)=>{
             return `'${x}'`
         })
@@ -248,16 +298,33 @@ Units
         let  z = s.replace(nreg,'')
         return `${z}`
       })
-
+      const nreg = new RegExp('\'','gm')
         let chk5 = chk4.replace(bCheck1,"\{")
         let chk6 = chk5.replace(bCheck2,"\}")
-                   
+                        .replace(Bond1,"-") 
+                        .replace(Bond2,"=") 
+                        .replace(Bond3,"☰") 
+                        .replace(All_bonds_with_rightquote,(p)=>{
+                            let q = p.replace(nreg,'')
+                            return `\'${q}`
+                        })
+                        .replace(All_bonds_with_leftquote,(p)=>{
+                            let q = p.replace(nreg,'')
+                            return `${q}\'`
+                        })
+        
+                    
         let chk7 = chk6.replace(betweenQuotes,(x)=>{
             let nreg = new RegExp("\'","g")
             let nreg1 = new RegExp("(\\{|\\})","g")
-
+            const nreg_bond1 = new RegExp("(-)","gm")
+            const nreg_bond2 = new RegExp("(=)","gm")
+            const nreg_bond3 = new RegExp("(☰|≡)","gm")
             let  y = x.replace(nreg1,'_') 
             let  z = y.replace(nreg,'')
+                        .replace(nreg_bond1,"1")
+                        .replace(nreg_bond2,"2")
+                        .replace(nreg_bond3,"3")
             return `@chem_${z};` 
         })
                         .replace(italiano,(i)=>{
@@ -366,7 +433,7 @@ Units
    <div class="basis-1/2 p-10">
     <div class="subbox1">
         <Heading tag="h4">ENG:</Heading>
-        <P><Mark>Note:</Mark>bonds,charge is not supported yet they will remain as it is.</P>
+        <P><Mark>Note:</Mark>triple bonds,charge is not supported yet they will remain as it is.</P>
         <CodeMirror 
         bind:value={eng_val} 
         theme={oneDark}
