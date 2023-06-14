@@ -87,11 +87,11 @@ Units
         const betweenQuotes = new RegExp("\'(.*?)\'",'gm') //values between quotes
         const sps = new RegExp("\\b(sp[2|3])\\b","gm")
         const sn = new RegExp("\\b(SN2)\\b","gm")
-        const Bond1 = new RegExp("(\'?-\'?)","gm")
+        const Bond1 = new RegExp("(\'-\')","gm")
         const Bond2 = new RegExp("(\'=\')","gm")
-        const Bond3 = new RegExp("(\'?(☰|≡)\'?)","gm")
-        const All_bonds_with_rightquote = new RegExp("(-\')|(=\')|(☰\')|(≡\')","gm")
-        const All_bonds_with_leftquote = new RegExp("(\'-)|(\''=)|(\'☰)|(\'≡)","gm")
+        const Bond3 = new RegExp("(\'(≡)\')","gm")
+        const All_bonds_with_rightquote = new RegExp("(-\')|(=\')|(≡\')","gm")
+        // const All_bonds_with_leftquote = new RegExp("(\'-)|(\'=)|(\'≡)","gm")
         let chk1 = para.replace(chemReg,(x)=>{
             return `'${x}'`
         })
@@ -113,15 +113,16 @@ Units
             let nreg = new RegExp("\'","gm")
             let chk6_bonded = chk6.replace(Bond1,"-") 
                                 .replace(Bond2,"=") 
-                                .replace(Bond3,"☰") 
+                                .replace(Bond3,"≡") 
                                 .replace(All_bonds_with_rightquote,(p)=>{
                                     let q = p.replace(nreg,'')
                                     return `\'${q}`
                                 })
-                                .replace(All_bonds_with_leftquote,(p)=>{
-                                    let q = p.replace(nreg,'')
-                                    return `${q}\'`
-                                })
+                                // .replace(All_bonds_with_leftquote,(p)=>{
+                                //     let q = p.replace(nreg,'')
+                                //     return `${q}\'`
+                                // })
+                            console.log(chk6_bonded);
             if (chk7_temp = chk6_bonded.match(betweenQuotes)){
                 for(const x of chk7_temp){
                     const nreg1 = new RegExp("(\\{|\\})","g")
@@ -129,7 +130,7 @@ Units
                     const nreg_bond1 = new RegExp("(-)","gm")
                     const nreg_bond2 = new RegExp("(=)","gm")
                     const nreg_bond3 = new RegExp("(☰|≡)","gm")
-    
+                        
                     let x1 = x
                     .replace(nreg1,'_')
                     .replace(nreg,'')
@@ -433,7 +434,7 @@ Units
    <div class="basis-1/2 p-10">
     <div class="subbox1">
         <Heading tag="h4">ENG:</Heading>
-        <P><Mark>Note:</Mark>triple bonds,charge is not supported yet they will remain as it is.</P>
+        <P><Mark>Note:</Mark>right open bonds,charge is not supported yet they will remain as it is.</P>
         <CodeMirror 
         bind:value={eng_val} 
         theme={oneDark}
