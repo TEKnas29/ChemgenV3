@@ -286,7 +286,7 @@ Units
         const Bond2 = new RegExp("\'(=)\'","gm")
         const Bond3 = new RegExp("\'(☰|≡)\'","gm")
         const All_bonds_with_rightquote = new RegExp("(-\')|(=\')|(☰\')|(≡\')","gm")
-        const All_bonds_with_leftquote = new RegExp("(\'-)|(\''=)|(\'☰)|(\'≡)","gm")
+        // const All_bonds_with_leftquote = new RegExp("(\'-)|(\''=)|(\'☰)|(\'≡)","gm")
         let chk1 = para.replace(chemReg,(x)=>{
             return `'${x}'`
         })
@@ -309,10 +309,10 @@ Units
                             let q = p.replace(nreg,'')
                             return `\'${q}`
                         })
-                        .replace(All_bonds_with_leftquote,(p)=>{
-                            let q = p.replace(nreg,'')
-                            return `${q}\'`
-                        })
+                        // .replace(All_bonds_with_leftquote,(p)=>{
+                        //     let q = p.replace(nreg,'')
+                        //     return `${q}\'`
+                        // })
         
                     
         let chk7 = chk6.replace(betweenQuotes,(x)=>{
