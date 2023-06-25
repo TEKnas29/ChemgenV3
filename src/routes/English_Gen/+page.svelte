@@ -22,8 +22,8 @@ Units
     let Ep=''
     let mq = []
     let gs = []
-    $: f1 = setf1(Qn+' '+Hn+' '+Ep)
-    $: t1 = sett1(Qn+' '+Hn+' '+Ep)
+    $: f1 = setf1(Qn+' '+Hn+' '+Ep +' '+PartsMash)
+    $: t1 = sett1(Qn+' '+Hn+' '+Ep +' '+PartsMash)
     $: chemVar = setchemVAr(Qn+" "+Hn+" "+Ep+" "+PartsMash)
     $: isl_final = checkIsl(f1,t1,chemVar)
     $: isl_val = `<!-- ***************VAR************* -->\n${isl_final}`
@@ -164,7 +164,7 @@ Units
    <div class="basis-1/2 p-10">
     <div class="subbox1">
         <Heading tag="h4">ENG:</Heading>
-        <P><Mark>Note:</Mark>right open bonds,charge is not supported yet they will remain as it is.</P>
+        <P><Mark>Note:</Mark>charges and units is not supported yet they will remain as it is.</P>
         <CodeMirror 
         bind:value={eng_val} 
         theme={oneDark}

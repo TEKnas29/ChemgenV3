@@ -319,6 +319,7 @@ export function setchemVAr(para) {
         const nreg_bond2 = new RegExp("(=)","gm")
         const nreg_bond3 = new RegExp("(≡)","gm")
         for (const c7 of chk7_temp) {
+            //if bonds in formula use font chemsymb
             if (c7.match(nreg_bond1) || c7.match(nreg_bond2) || c7.match(nreg_bond3) || c7.match(grignard_check)) {
                 
                 const nreg1 = new RegExp("(\\{|\\})","gm")
@@ -348,7 +349,7 @@ export function setchemVAr(para) {
                    
                         
                 chk7 += `\n<var name=chem_${x1} value="<math><font face=chemsymb>${x2}</font></math>">`
-                
+                //else use funtion
             } else {
                 
                 const nreg1 = new RegExp("(\\{|\\})","g")
@@ -394,11 +395,100 @@ export function setchemVAr(para) {
     if (chk9 = chk6.match(sn)) {
             chk7 += `\n<var name=sn2 value="<math><font face=text>S<sub>N</sub>2</font></math>">`   
     }
-
+    chk7 += symbolVar(chk6)
     const finalOp = chk7.split("\n")
                 .filter((item, i, allItems) => {
                   return i === allItems.indexOf(item);
                 })
                 .join("\n");
     return finalOp
+}
+function symbolVar(para) {
+    const symReg = new RegExp("[^a-zA-Z0-9\\s\\-\\(\\)\\{\\}\\@\\_\\;]","gm") //Regex for spl chars
+    if (para) {
+        let symvar = []
+        let finalOp = ''
+        if (symvar = para.match(symReg)) {
+            for (const sym of symvar) {
+                switch (sym) {
+                    case 'α':
+                        finalOp += `<var name=symb_alpha value="<math>&alpha;</math>">\n`
+                        break;
+                    case 'β':
+                        finalOp += `<var name=symb_beta value="<math>&beta;</math>">\n`
+                        break;
+                    case 'γ':
+                        finalOp += `<var name=symb_gamma value="<math>&gamma;</math>">\n`
+                        break;
+                    case 'δ':
+                        finalOp += `<var name=symb_delta value="<math>&delta;</math>">\n`
+                        break;
+                    case 'ε':
+                        finalOp += `<var name=symb_epsilon value="<math>&epsilon;</math>">\n`
+                        break;
+                    case 'ζ':
+                        finalOp += `<var name=symb_zeta value="<math>&zeta;</math>">\n`
+                        break;
+                    case 'η':
+                        finalOp += `<var name=symb_eta value="<math>&eta;</math>">\n`
+                        break;
+                    case 'θ':
+                        finalOp += `<var name=symb_theta value="<math>&theta;</math>">\n`
+                        break;
+                    case 'ι':
+                        finalOp += `<var name=symb_iota value="<math>&iota;</math>">\n`
+                        break;
+                    case 'κ':
+                        finalOp += `<var name=symb_kappa value="<math>&kappa;</math>">\n`
+                        break;
+                    case 'λ':
+                        finalOp += `<var name=symb_lambda value="<math>&lambda;</math>">\n`
+                        break;
+                    case 'μ':
+                        finalOp += `<var name=symb_mu value="<math>&mu;</math>">\n`
+                        break;
+                    case 'ν':
+                        finalOp += `<var name=symb_nu value="<math>&nu;</math>">\n`
+                        break;
+                    case 'ξ':
+                        finalOp += `<var name=symb_ksi value="<math>&ksi;</math>">\n`
+                        break;
+                    case 'ο':
+                        finalOp += `<var name=symb_omicron value="<math>&omicron;</math>">\n`
+                        break;
+                    case 'π':
+                        finalOp += `<var name=symb_pi value="<math>&pi;</math>">\n`
+                        break;
+                    case 'ρ':
+                        finalOp += `<var name=symb_rho value="<math>&rho;</math>">\n`
+                        break;
+                    case 'σ':
+                        finalOp += `<var name=symb_sigma value="<math>&sigma;</math>">\n`
+                    break;
+                    case 'τ':
+                        finalOp += `<var name=symb_tau value="<math>&tau;</math>">\n`
+                    break;
+                    case 'υ':
+                        finalOp += `<var name=symb_upsilon value="<math>&upsilon;</math>">\n`
+                    break;
+                    case 'φ':
+                        finalOp += `<var name=symb_phi value="<math>&phi;</math>">\n`
+                    break;
+                    case 'ψ':
+                        finalOp += `<var name=symb_psi value="<math>&psi;</math>">\n`
+                    break;
+                    case 'ω':
+                        finalOp += `<var name=symb_omega value="<math>&omega;</math>">\n`
+                    break;
+                    case 'Δ':
+                        finalOp += `<var name=symb_cap_delta value="<math>&cap_delta;</math>">\n`
+                    break;
+                    default:
+                        finalOp += sym
+                        break
+                }
+        }
+        return finalOp 
+    }}
+    return ''
 }
