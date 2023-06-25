@@ -294,7 +294,7 @@ export function setchemVAr(para) {
     let chk6 = chk5.replace(bCheck2,"\}")
                     .replace(Bond1,"-") 
                     .replace(Bond2,"=") 
-                    .replace(Bond3,"☰") 
+                    .replace(Bond3,"≡") 
                     .replace(All_bonds_with_right_bar,(p)=>{
                         let q = p.replace(BrokenBarDetect,'')
                                 .replace(' ','')
@@ -310,7 +310,7 @@ export function setchemVAr(para) {
                         return `${q}¦`
                     })
                     
-    //
+    //chk7
     let chk7_temp;
     let chk7 = '';
 
@@ -484,7 +484,7 @@ function symbolVar(para) {
                         finalOp += `<var name=symb_cap_delta value="<math>&cap_delta;</math>">\n`
                     break;
                     default:
-                        finalOp += sym
+                        finalOp += ''
                         break
                 }
         }
