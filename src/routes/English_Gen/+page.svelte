@@ -1,8 +1,6 @@
 <!-- TODO List -->
 <!-- 
-SN2 support
 +/- support may be possible 
-Bonds support not possible no idea 
 struct check list
 Units
 -->
@@ -14,9 +12,6 @@ Units
     import { Label, Input, Textarea, Heading, Hr, P, Mark, ButtonGroup, Button, InputAddon } from 'flowbite-svelte'
     import { filterEng, setchemVAr } from '$lib/EngConverter'
 
-    const BlackList = new  RegExp("\'(NMR|SN2|So|E2|In|A|IR|To|IUPAC|By|DDM)\'","gm")  // Blacklist for words looklike chem formula
-    const chemReg = new RegExp("[A-Z][a-z]?\\d*|\\([^()]*(?:\\(.*\\))?[^()]*\\)\\d+", 'gm') // https://stackoverflow.com/questions/23602175/regex-for-parsing-chemical-formulas
-
     let Qn=''
     let Hn=''
     let Ep=''
@@ -24,8 +19,9 @@ Units
     let gs = []
     $: f1 = setf1(Qn+' '+Hn+' '+Ep +' '+PartsMash)
     $: t1 = sett1(Qn+' '+Hn+' '+Ep +' '+PartsMash)
+    $: n1 = setn1(Qn+' '+Hn+' '+Ep +' '+PartsMash)
     $: chemVar = setchemVAr(Qn+" "+Hn+" "+Ep+" "+PartsMash)
-    $: isl_final = checkIsl(f1,t1,chemVar)
+    $: isl_final = checkIsl(f1,t1,n1,chemVar)
     $: isl_val = `<!-- ***************VAR************* -->\n${isl_final}`
     $: Qn1 = filterEng(Qn,1);
     $: Hn1 = filterEng(Hn,2);
@@ -36,7 +32,7 @@ Units
     $: engFinal = Qn1+'\n'+ Hn1+'\n'+ Ep1 + '\n' + Parts + '\n' +GSparts
     $: eng_val = engFinal
 
-    function checkIsl(f1,t1,chemVar) {
+    function checkIsl(f1,t1,n1,chemVar) {
         let final = ''
         if (f1 !=="<var name=f1 value={}>  // remove extra commas") {    
             final += f1 + "\n"
@@ -44,8 +40,8 @@ Units
         if (t1 !=="<var name=t1 value={}>  // remove extra commas") {
             final += t1 + "\n"
         }
-        if(chemVar){
-            final += chemVar + "\n"
+        if(chemVar || n1){
+            final += chemVar + "\n" + n1
         }
         return final
     }
@@ -58,7 +54,7 @@ Units
                       return i === allItems.indexOf(item);
                     })
             for(const x of f1){
-                    fp += `\n"@userf.replace_comma_num(${x});",`
+                    fp += `\n"<math>@userf.replace_comma_num(${x});</math>",`
             
             }
         }
@@ -76,12 +72,33 @@ Units
                     }
                     })
             for(const x of t1){
-                    tp += `\n"@userf.replace_comma_num(@userf.add_comma_num('${x}'););",`
+                    tp += `\n"<math>@userf.replace_comma_num(@userf.add_comma_num('${x}'););</math>",`
             
             }
         }
         tp += "}>  // remove extra commas"
         return tp
+    }
+    function setn1(para) {
+        const numChk = new RegExp("\\b\\d+\\.\\d+\\b|\\b\\d+\\b","gm")
+        const flChk = new RegExp("\\b\\d+\\.\\d+\\b","gm")
+        let t;
+
+        let np = ""
+        let fl_bool = false
+        if(t =  para.match(numChk)){
+            let n1 = t.filter((item, i, allItems) => {
+                fl_bool = item.match(flChk)        
+                if (item < 999 && !fl_bool) {
+                        return i === allItems.indexOf(item);
+                    }
+                    })
+            for(const x of n1){
+                    np += `\n<var name=num_${x} value="<math>${x}</math>">`
+            
+            }
+        }
+        return np
     }
 
     function pMashup(mq,gs) {

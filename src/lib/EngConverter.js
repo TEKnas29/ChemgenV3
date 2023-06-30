@@ -170,26 +170,25 @@ function CheckAllStage1(para) {
             let y = `@userf.replace_comma_num(${x});`
             if (floatArr.includes(y)) {
                 let count = floatArr.indexOf(y) + 1
-                return `@userf.disp('@f1[${count}];');`
+                return `@f1[${count}];`
             }
             let count = floatArr.length + 1
             floatArr.push(y)
-            return `@userf.disp('@f1[${count}];');`
+            return `@f1[${count}];`
         }else if (x > 999) {
             let y = `@userf.replace_comma_num(@userf.add_comma_num('${x}'));`
             if (thousandArr.includes(y)) {
                 let count = thousandArr.indexOf(y) + 1
-                return `@userf.disp('@t1[${count}];');`                
+                return `@t1[${count}];`                
             }
             let count = thousandArr.length + 1
             thousandArr.push(y)
-            return `@userf.disp('@t1[${count}];');`                
+            return `@t1[${count}];`                
         }else if(x.match(degChk)){
             x = x.replace(degChk,"&deg;")
             return `@userf.disp('${x}');`                
         }else{
-            return `@userf.disp('${x}');`                
-
+            return `@num_${x};`                
         }
     })
     
