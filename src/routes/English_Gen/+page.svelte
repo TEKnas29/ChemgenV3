@@ -3,6 +3,7 @@
 +/- support may be possible 
 struct check list
 Units
+atlassian Quotes to normal quote
 -->
 
 <script>
@@ -181,7 +182,7 @@ Units
    <div class="basis-1/2 p-10">
     <div class="subbox1">
         <Heading tag="h4">ENG:</Heading>
-        <P><Mark>Note:</Mark>charges and units is not supported yet they will remain as it is.</P>
+        <P><Mark>Note:</Mark>charges,grignards/primes, units is not supported yet they will remain as it is.</P>
         <CodeMirror 
         bind:value={eng_val} 
         theme={oneDark}

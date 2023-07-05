@@ -12,7 +12,7 @@ const Bond3 = new RegExp("¦(≡)¦","gm")
 const BrokenBarDetect = new RegExp('¦','gm') 
 const All_bonds_with_right_bar = new RegExp("(^| )(-|=|☰|≡)¦","gm")
 const All_bonds_with_left_bar = new RegExp("¦(-|=|☰|≡)( |$)","gm")
-const grignard_check = new RegExp("¦?(\')¦?","gm")
+const grignard_check = new RegExp("[^\\d]¦?(\')¦?","gm")
 
 //functions
 // For ENG file
@@ -118,10 +118,10 @@ function CheckAllStage1(para) {
                                 .replace(' ','')
                         return `${q}¦`
                     })
-                    .replace(grignard_check,(p)=>{
-                        let q = p.replace(BrokenBarDetect,'')
-                        return `${q}¦`
-                    })
+                    // .replace(grignard_check,(p)=>{
+                    //     let q = p.replace(BrokenBarDetect,'')
+                    //     return `${q}¦`
+                    // })
                     
 
     //chk7 
@@ -135,12 +135,11 @@ function CheckAllStage1(para) {
         const nreg_bond2 = new RegExp("(=)","gm")
         const nreg_bond3 = new RegExp("(☰|≡)","gm")
         let  y = x.replace(curlyBackets,'_') 
-
         let  z = y
         .replace(nreg_bond1,"1b")
         .replace(nreg_bond2,"2b")
         .replace(nreg_bond3,"3b")
-        .replace(grignard_check,'g')
+        // .replace(/\'/gm,'g')
         .replace(BrokenBarDetect,'')
 
         return `@chem_${z};` 
@@ -304,10 +303,10 @@ export function setchemVAr(para) {
                                 .replace(' ','')
                         return `${q}¦`
                     })
-                    .replace(grignard_check,(p)=>{
-                        let q = p.replace(BrokenBarDetect,'')
-                        return `${q}¦`
-                    })
+                    // .replace(grignard_check,(p)=>{
+                    //     let q = p.replace(BrokenBarDetect,'')
+                    //     return `${q}¦`
+                    // })
                     
     //chk7
     let chk7_temp;
@@ -319,14 +318,14 @@ export function setchemVAr(para) {
         const nreg_bond3 = new RegExp("(≡)","gm")
         for (const c7 of chk7_temp) {
             //if bonds in formula use font chemsymb
-            if (c7.match(nreg_bond1) || c7.match(nreg_bond2) || c7.match(nreg_bond3) || c7.match(grignard_check)) {
+            if (c7.match(nreg_bond1) || c7.match(nreg_bond2) || c7.match(nreg_bond3)) {
                 
                 const nreg1 = new RegExp("(\\{|\\})","gm")
                 const nreg2 = new RegExp('\\d+','gm')
                     
                 let x1 = c7
                 .replace(nreg1,'_')
-                .replace(grignard_check,'g')
+                // .replace(grignard_check,'g')
                 .replace(BrokenBarDetect,'')
                 .replace(nreg_bond1,"1b")
                 .replace(nreg_bond2,"2b")
@@ -336,7 +335,7 @@ export function setchemVAr(para) {
                         .replace(nreg_bond1,"@userfChemistry.singlebond();")
                         .replace(nreg_bond2,"@userfChemistry.doublebond();")
                         .replace(nreg_bond3,"@userfChemistry.triplebond();")
-                        .replace(grignard_check,'&prime;')
+                        // .replace(grignard_check,'&prime;')
                         .replace(BrokenBarDetect,"")
                         .replace(nreg2,(p)=>{
                             let q = p.replace(BrokenBarDetect,'')
