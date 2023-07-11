@@ -332,21 +332,21 @@ export function setchemVAr(para) {
                 .replace(nreg_bond3,"3b")
                 
                 let x2 = c7
-                        .replace(nreg_bond1,"@userfChemistry.singlebond();")
-                        .replace(nreg_bond2,"@userfChemistry.doublebond();")
-                        .replace(nreg_bond3,"@userfChemistry.triplebond();")
-                        // .replace(grignard_check,'&prime;')
                         .replace(BrokenBarDetect,"")
+                        // .replace(grignard_check,'&prime;')
                         .replace(nreg2,(p)=>{
                             let q = p.replace(BrokenBarDetect,'')
                             return `<sub>${q}</sub>`
                         })
+                        .replace(nreg_bond1,"@userfChemistry.simplebond(1);")
+                        .replace(nreg_bond2,"@userfChemistry.simplebond(2);")
+                        .replace(nreg_bond3,"@userfChemistry.simplebond(3);")
                         .replace(BrokenBarDetect,'')
                         .replace(/\{/gm,"(")
                         .replace(/\}/gm,")")
                    
                         
-                chk7 += `\n<var name=chem_${x1} value="<math><font face=chemsymb>${x2}</font></math>">`
+                chk7 += `\n<var name=chem_${x1} value="<math><font face=chemwithmath>${x2}</font></math>">`
                 //else use funtion
             } else {
                 
