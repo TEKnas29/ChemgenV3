@@ -78,7 +78,7 @@ function CheckAllStage1(para) {
 
     const numChk = new RegExp("(\\b\\d+\\.\\d+\\b)|(\\b\\d+\\b)(°)?","gm") //float and number check 
     const spChk = new RegExp("(?:(?!(\n|\\s\n))\\s+)","gm")
-    const italiano = new RegExp("\\b(tert|cis|trans)\\b","gm")
+    const italiano = new RegExp("\\b(tert)\\b","gm")
     const sps = new RegExp("\\b(sp(2|3))|(SN2)\\b","gm")
     
 
