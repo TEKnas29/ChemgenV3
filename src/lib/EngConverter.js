@@ -1,5 +1,5 @@
 // Variables
-const BlackList = new  RegExp("¦(NMR|SN2|So|E2|In|A|IR|To|IUPAC|By|DDM|RNA|DNA|CoA|GTP|ATP|GDP|AMP|TMP)¦","gm")  // Blacklist for words looklike chem formula
+const BlackList = new  RegExp("¦(NMR|SN2|So|E2|In|A|IR|To|IUPAC|By|DDM|RNA|DNA|CoA|GTP|ATP|GDP|AMP|TMP|If)¦","gm")  // Blacklist for words looklike chem formula
 const chemReg = new RegExp("[A-Z][a-z]?\\d*|\\([^()]*(?:\\(.*\\))?[^()]*\\)\\d+", 'gm') // https://stackoverflow.com/questions/23602175/regex-for-parsing-chemical-formulas   
 const nonChem = new RegExp("(¦(..))?(¦)([a-z])","gm") //crazy logic but it works(for works like "The")
 const qCheck = new RegExp("¦¦","gm") //double quotes checker
