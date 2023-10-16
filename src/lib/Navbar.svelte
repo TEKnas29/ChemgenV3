@@ -15,6 +15,7 @@
         <NavButton BtnName=Auto />
         <NavButton BtnName="Template_Gen"/>
         <NavButton BtnName="English_Gen"/>
+        <!-- <NavButton BtnName="chem_eq"/> -->
         <DarkMode/>
       </NavUl>
 </Navbar>
