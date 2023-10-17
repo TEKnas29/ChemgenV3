@@ -5,7 +5,6 @@ import { redirect } from '@sveltejs/kit';
 import { dev } from '$app/environment'
 
 export function load() {
-      if (dev) {
         return {
             apiK: TINYMCE_API_KEY,
             conf: {
@@ -20,8 +19,4 @@ export function load() {
               
            }
         };
-      } else {
-        
-        throw redirect(307, '/English_Gen');  // temporary bloker
-      }
   }
